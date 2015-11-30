@@ -7,8 +7,12 @@
  *
  */
 
-(function() {
-
-    
-
-})();
+var spill = {
+    spiller: new Spiller("images/char-boy.png",0,0,100,100),
+    oppdater: function(){
+        this.spiller.oppdater();
+    },
+    tegn: function() {
+        this.spiller.tegn();
+    }
+};

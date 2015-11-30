@@ -24,18 +24,3 @@ function lesFil(filBane, tilbakekall) {
 
 }
 
-/**
- * Liten klasse som lager et canvas vindu med spesifisert informasjon. Returnerer dette vinduet, uten at det er lagt til DOM
- * @param id
- * @param width
- * @param height
- * @returns {Element}
- * @constructor
- */
-function Canvas(id,width,height){
-    var canvas = document.createElement('canvas');
-    canvas.id = id;
-    canvas.width = width;
-    canvas.height = height;
-    return canvas;
-}

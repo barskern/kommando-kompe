@@ -7,8 +7,32 @@
  *
  */
 
-(function() {
 
-    
+function Spiller(bane,x,y,bredde,høyde){
+    Enhet.call(this,bane,x,y,bredde,høyde);
+}
 
-})();
+Spiller.prototype = Object.create(Enhet.prototype);
+Spiller.prototype.constructor = Spiller;
+
+Spiller.prototype.oppdater = function(){
+    Enhet.prototype.oppdater();
+};
+
+
+function Enhet(bane,x,y,bredde,høyde){
+    this.bane = bane;
+    this.x = x;
+    this.y = y;
+    this.bredde = bredde;
+    this.høyde = høyde;
+}
+
+Enhet.prototype.oppdater = function(){
+};
+Enhet.prototype.tegn = function(){
+    ctx.drawImage(Ressurser.hent(this.bane),this.x,this.y);
+};
+
+
+
