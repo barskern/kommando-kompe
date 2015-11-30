@@ -35,7 +35,7 @@ var motor = (function(){
         main();
     }
 
-    Ressurser.lastBilder(["char-boy.png","KKbackground.jpg"]);
+    Ressurser.lastBilder(["KKbackground.jpg"]);
 
     Ressurser.narKlar(init);
 
