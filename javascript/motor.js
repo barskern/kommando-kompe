@@ -10,7 +10,6 @@
 var motor = (function(){
 
     var doku = window.document,
-        vindu = window,
         canvas = doku.createElement('canvas'),
         ctx = canvas.getContext('2d'),
         sisteTid;
@@ -27,7 +26,7 @@ var motor = (function(){
         spill.tegn();
 
         sisteTid = na;
-        vindu.requestAnimationFrame(main);
+        window.requestAnimationFrame(main);
     }
 
     function init(){
@@ -36,7 +35,7 @@ var motor = (function(){
         main();
     }
 
-    Ressurser.last("images/char-boy.png");
+    Ressurser.last("bilder/char-boy.png");
 
     Ressurser.narKlar(init);
 
