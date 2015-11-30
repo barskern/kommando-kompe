@@ -8,9 +8,9 @@
  */
 
 /**
- * En funksjon som leser innholdet i en fil på den spesifiserte filBanen, og når filen er lest blir tilbakekallet kalt.
+ * En funksjon som leser innholdet i en fil pÃ¥ den spesifiserte filBanen, og nÃ¥r filen er lest blir tilbakekallet kalt.
  * @param filBane banen til filen med base i hovedmappen
- * @param tilbakekall funksjonen som blir kalt når innholdet i filen er lest
+ * @param tilbakekall funksjonen som blir kalt nÃ¥r innholdet i filen er lest
  */
 function lesFil(filBane, tilbakekall) {
     var xobj = new XMLHttpRequest();
