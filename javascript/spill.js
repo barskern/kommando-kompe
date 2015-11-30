@@ -8,7 +8,7 @@
  */
 
 var spill = {
-    spiller: new Spiller("bilder/char-boy.png",0,0,100,100),
+    spiller: new Spiller("CommandoCompe.png",0,0,100,0),
     oppdater: function(){
         this.spiller.oppdater();
     },

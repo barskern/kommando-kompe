@@ -21,6 +21,7 @@ Spiller.prototype.oppdater = function(){
 
 
 function Enhet(bane,x,y,bredde,høyde){
+    Ressurser.lastBilder(bane);
     this.bane = bane;
     this.x = x;
     this.y = y;
@@ -31,7 +32,9 @@ function Enhet(bane,x,y,bredde,høyde){
 Enhet.prototype.oppdater = function(){
 };
 Enhet.prototype.tegn = function(){
-    ctx.drawImage(Ressurser.hent(this.bane),this.x,this.y);
+    var bilde = Ressurser.hentBilde(this.bane);
+    if(bilde)
+        ctx.drawImage(bilde,this.x,this.y,this.bredde,((this.høyde === 0 && (bilde.height/bilde.width)*this.bredde) || this.høyde));
 };
 
 

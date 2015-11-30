@@ -11,44 +11,42 @@
  * Et enkelt verktøy for a laste bilder og lagre de i cache.
  */
 (function(){
-    var ressurser = {}, tilbakekall = [];
+    var bildeRessurser = {}, tilbakekall = [];
 
     /**
      * Tar enten en bane eller array med baner og laster den/dem.
      * @param baneEllerArray
      */
-    function last(baneEllerArray){
-        if(baneEllerArray instanceof  Array){
+    function lastBilder(baneEllerArray){
+        if(baneEllerArray instanceof Array){
             baneEllerArray.forEach(function(bane){
-               _last(bane);
+                if(!hentBilde(bane))
+                    _lastBilde(bane);
             });
         } else {
-            _last(baneEllerArray);
+            if(!hentBilde(baneEllerArray))
+                _lastBilde(baneEllerArray);
         }
     }
 
     /**
-     * Laster bildet og lagrer det i ressurser objektet.
+     * Laster bildet og lagrer det i bildeRessurser objektet.
      * @param bane banen til bildet
      * @returns verdien av bildet hvis det allerede er lastet
      */
-    function _last(bane){
-        if(ressurser[bane]){
-            return ressurser[bane];
-        } else {
-            var bilde = new Image();
-            bilde.onload = function(){
-                ressurser[bane] = bilde;
+    function _lastBilde(bane){
+        var bilde = new Image();
+        bilde.onload = function(){
+            bildeRessurser[bane] = bilde;
 
-                if(ressurserLastet()){
-                    tilbakekall.forEach(function(tk){
-                        tk();
-                    });
-                }
-            };
-            ressurser[bane] = false;
-            bilde.src = "../"+bane;
-        }
+            if(ressurserLastet()){
+                tilbakekall.forEach(function(tk){
+                    tk();
+                });
+            }
+        };
+        bildeRessurser[bane] = false;
+        bilde.src = "../bilder/"+bane;
     }
 
     /**
@@ -56,8 +54,10 @@
      * @param bane banen til bildet
      * @returns bilde
      */
-    function hent(bane){
-        return ressurser[bane];
+    function hentBilde(bane){
+        var res = bildeRessurser[bane];
+        if(res)
+            return res;
     }
 
     /**
@@ -66,8 +66,8 @@
      */
     function ressurserLastet(){
         var klar = true;
-        for(var r in ressurser){
-            if(ressurser.hasOwnProperty(r) && !ressurser[r]){
+        for(var r in bildeRessurser){
+            if(bildeRessurser.hasOwnProperty(r) && !bildeRessurser[r]){
                 klar = false;
             }
         }
@@ -84,8 +84,8 @@
     }
 
     window.Ressurser = {
-        last: last,
-        hent: hent,
+        lastBilder: lastBilder,
+        hentBilde: hentBilde,
         narKlar: narKlar,
         ressurserLastet: ressurserLastet
     };

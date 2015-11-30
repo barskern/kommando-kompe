@@ -35,12 +35,9 @@ var motor = (function(){
         main();
     }
 
-    Ressurser.last("bilder/char-boy.png");
+    Ressurser.lastBilder(["char-boy.png","KKbackground.jpg"]);
 
     Ressurser.narKlar(init);
 
-
     window.ctx = ctx;
-
-
 })();
