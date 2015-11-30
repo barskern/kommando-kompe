@@ -46,7 +46,7 @@
             }
         };
         bildeRessurser[bane] = false;
-        bilde.src = "../bilder/"+bane;
+        bilde.src = "bilder/"+bane;
     }
 
     /**
