@@ -8,11 +8,10 @@
  */
 
 var spill = {
-    spiller: new Spiller("CommandoCompe.png",0,0,100,0),
     oppdater: function(){
-        this.spiller.oppdater();
+
     },
     tegn: function() {
-        this.spiller.tegn();
+
     }
 };
