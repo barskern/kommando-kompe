@@ -35,8 +35,6 @@ var motor = (function(){
         main();
     }
 
-    Ressurser.lastBilder(["KKbackground.jpg"]);
-
     Ressurser.narKlar(init);
 
     window.ctx = ctx;

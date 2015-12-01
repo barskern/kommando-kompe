@@ -55,9 +55,7 @@
      * @returns bilde
      */
     function hentBilde(bane){
-        var res = bildeRessurser[bane];
-        if(res)
-            return res;
+        return bildeRessurser[bane];
     }
 
     /**
@@ -66,9 +64,10 @@
      */
     function ressurserLastet(){
         var klar = true;
-        for(var r in bildeRessurser){
-            if(bildeRessurser.hasOwnProperty(r) && !bildeRessurser[r]){
+        for(var b in bildeRessurser){
+            if(bildeRessurser.hasOwnProperty(b) && !bildeRessurser[b]){
                 klar = false;
+                break;
             }
         }
         return klar;
