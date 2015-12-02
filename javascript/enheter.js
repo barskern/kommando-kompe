@@ -8,8 +8,8 @@
  */
 
 
-function Spiller(bane,x,y,bredde,høyde){
-    Enhet.call(this,bane,x,y,bredde,høyde);
+function Spiller(bane,terreng,x,y,bredde,høyde){
+    Enhet.call(this,bane,terreng,x,y,bredde,høyde);
 }
 
 Spiller.prototype = Object.create(Enhet.prototype);
@@ -17,12 +17,14 @@ Spiller.prototype.constructor = Spiller;
 
 Spiller.prototype.oppdater = function(){
     Enhet.prototype.oppdater();
+
 };
 
 
-function Enhet(bane,x,y,bredde,høyde){
+function Enhet(bane,terreng,x,y,bredde,høyde){
     Ressurser.lastBilder(bane);
     this.bane = bane;
+    this.terreng = terreng;
     this.x = x;
     this.y = y;
     this.bredde = bredde;
@@ -30,11 +32,14 @@ function Enhet(bane,x,y,bredde,høyde){
 }
 
 Enhet.prototype.oppdater = function(){
+
 };
+
 Enhet.prototype.tegn = function(){
     var bilde = Ressurser.hentBilde(this.bane);
     if(bilde)
-        ctx.drawImage(bilde,this.x,this.y,this.bredde,((this.høyde === 0 && (bilde.height/bilde.width)*this.bredde) || this.høyde));
+        ctx.drawImage(bilde,this.x,this.y,((this.bredde === 0 && (bilde.width/bilde.height)*this.høyde) || this.bredde),
+            ((this.høyde === 0 && (bilde.height/bilde.width)*this.bredde) || this.høyde));
 };
 
 

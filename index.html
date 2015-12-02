@@ -1,4 +1,12 @@
 <!DOCTYPE html>
+<!--
+ _     _  _____  _______ _______ _______ __   _ ______   _____
+ |____/  |     | |  |  | |  |  | |_____| | \  | |     \ |     |
+ |    \_ |_____| |  |  | |  |  | |     | |  \_| |_____/ |_____|
+ _     _  _____  _______  _____  _______
+ |____/  |     | |  |  | |_____] |______
+ |    \_ |_____| |  |  | |       |______
+-->
 <html>
 <head>
     <title>Morgendugg</title>
@@ -16,11 +24,17 @@
         body{
             margin: 0;
         }
-
+        canvas {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%,-50%);
+        }
         #comingSoon {
+            font-family: "Open-sans", Helvetica, sans-serif;
+            position: absolute;
             font-size: 100px;
             color: red;
-            position: relative;
             top: 300px;
             left: 30%;
             text-shadow: 5px 10px 10px black;
@@ -29,9 +43,10 @@
 </head>
 <body>
 
-    <h1 id="comingSoon">Coming soon</h1>
+    <!--<div id="comingSoon">Coming soon</div>-->
 
     <script src="javascript/ressurser.js"></script>
+    <script src="javascript/terreng.js"></script>
     <script src="javascript/enheter.js"></script>
 
     <script src="javascript/spill.js"></script>

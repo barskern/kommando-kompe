@@ -11,7 +11,7 @@
  * Et enkelt verktøy for a laste bilder og lagre de i cache.
  */
 (function(){
-    var bildeRessurser = {}, tilbakekall = [];
+    var bildeRessurser = {}, laster = {}, tilbakekall = [];
 
     /**
      * Tar enten en bane eller array med baner og laster den/dem.

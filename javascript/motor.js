@@ -12,30 +12,42 @@ var motor = (function(){
     var doku = window.document,
         canvas = doku.createElement('canvas'),
         ctx = canvas.getContext('2d'),
-        sisteTid;
+        spill = new Spill(),
+        clock = {
+            nå: 0,
+            sisteTid: 0,
+            delta: 0,
+            oppdater: function (){
+                this.nå = Date.now();
+                this.delta = (this.nå - this.sisteTid) / 1000.0;
+                this.sisteTid = this.nå;
+            }
+        };
 
     canvas.width = 600;
     canvas.height = 400;
 
     function main(){
-        var na = Date.now(),
-            delta = (na - sisteTid) / 1000.0;
+        clock.oppdater();
 
-        spill.oppdater(delta);
+        spill.oppdater();
         ctx.clearRect(0,0,canvas.width,canvas.height);
+        ctx.fillStyle = "white";
+        ctx.fillRect(0,0,canvas.width,canvas.height);
         spill.tegn();
 
-        sisteTid = na;
+
         window.requestAnimationFrame(main);
     }
 
     function init(){
         doku.body.appendChild(canvas);
-        sisteTid = Date.now();
+        clock.sisteTid = Date.now();
         main();
     }
 
     Ressurser.narKlar(init);
 
     window.ctx = ctx;
+    window.clock = clock;
 })();

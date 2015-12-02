@@ -7,11 +7,17 @@
  *
  */
 
-var spill = {
-    oppdater: function(){
 
-    },
-    tegn: function() {
+function Spill() {
+    this.terreng = new Terreng([[0,10,1],[50,30,1],[150,20,1],[280,50,10,1]]);
+    this.spiller = new Spiller("CommandoCompe.png",this.terreng,-50,-50,0,50);
 
-    }
-};
+    this.oppdater = function(){
+        this.terreng.oppdater();
+        this.spiller.oppdater();
+    };
+    this.tegn = function(){
+        this.spiller.tegn();
+        this.terreng.tegn();
+    };
+}
