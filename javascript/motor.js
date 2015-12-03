@@ -36,8 +36,7 @@ var motor = (function(){
         ctx.fillRect(0,0,canvas.width,canvas.height);
         spill.tegn();
 
-
-        window.requestAnimationFrame(main);
+        requestAnimationFrame(main);
     }
 
     function init(){

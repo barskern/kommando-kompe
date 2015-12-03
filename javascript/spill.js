@@ -9,8 +9,8 @@
 
 
 function Spill() {
-    this.terreng = new Terreng([[0,10,1],[50,30,1],[150,20,1],[280,50,10,1]]);
-    this.spiller = new Spiller("CommandoCompe.png",this.terreng,-50,-50,0,50);
+    this.terreng = new Terreng([[0,400 - 150,20,1],[300,400 - 300,20,1],[600,400 - 60,20,1]]);
+    this.spiller = new Spiller("CommandoCompe.png",this.terreng,-10,0,0,50);
 
     this.oppdater = function(){
         this.terreng.oppdater();

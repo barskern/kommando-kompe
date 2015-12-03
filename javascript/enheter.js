@@ -16,8 +16,7 @@ Spiller.prototype = Object.create(Enhet.prototype);
 Spiller.prototype.constructor = Spiller;
 
 Spiller.prototype.oppdater = function(){
-    Enhet.prototype.oppdater();
-
+    Enhet.prototype.oppdater.call(this);
 };
 
 
@@ -32,7 +31,8 @@ function Enhet(bane,terreng,x,y,bredde,høyde){
 }
 
 Enhet.prototype.oppdater = function(){
-
+    this.y = this.terreng.hentLineærY(this.x)-this.høyde;
+    this.x += 80 * clock.delta;
 };
 
 Enhet.prototype.tegn = function(){
