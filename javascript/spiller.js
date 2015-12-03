@@ -10,14 +10,20 @@
 
 function Spiller(bane,x,y,bredde,høyde){
     Enhet.call(this,bane,x,y,bredde,høyde);
+
+    this.inngangsdata = new Inngangsdata();
+    this.inngangsdata.leggTilTrykkeEvent(['keydown','keyup'],68,this.move.bind(this,1,2));  //Høyre D
+    this.inngangsdata.leggTilTrykkeEvent(['keydown','keyup'],65,this.move.bind(this,-1,2)); //Venstre A
+    this.inngangsdata.leggTilTrykkeEvent(['keydown','keyup'],32,this.hopp.bind(this,8));   //Hopp Mellomrom
+
 }
 
 Spiller.prototype = Object.create(Enhet.prototype);
 Spiller.prototype.constructor = Spiller;
 
 Spiller.prototype.oppdater = function(){
+    this.inngangsdata.oppdater();
     Enhet.prototype.oppdater.call(this);
-
-    this.y = Terreng.nåværende.hentLineærY(this.x+this.bredde/2) - this.høyde;
-    this.x += 80 * clock.delta;
 };
+
+

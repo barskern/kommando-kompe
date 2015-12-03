@@ -9,9 +9,9 @@
 
 
 function Spill() {
-    this.terreng = new Terreng([[0,400 - 150,20,1],[300,400 - 300,20,1],[600,400 - 60,20,1]]);
+    this.terreng = new Terreng([[0,400 - 150,20,1],[130,400-40,20,1],[300,400 - 100,20,1],[600,400 - 60,20,1]]);
     this.terreng.settSomNåværende();
-    this.spiller = new Spiller("CommandoCompe.png",-10,0,0,50);
+    this.spiller = new Spiller("KommandoKalleFigur.png",50,0,0,1.8*Spill.pikslerPerMeter);
 
     this.oppdater = function(){
         this.terreng.oppdater();
@@ -22,3 +22,5 @@ function Spill() {
         this.terreng.tegn();
     };
 }
+
+Spill.pikslerPerMeter = 40;

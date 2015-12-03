@@ -10,6 +10,7 @@
 
 function Terreng(nøkkelpunktKart){
     this.nøkkelpunktKart = nøkkelpunktKart; // [[x,y,(høyde),type]]
+    this.farge = "black"; //TODO Midlertidig farge, må bli et bilde under en linje
 }
 
 
@@ -47,16 +48,13 @@ Terreng.prototype.oppdater = function(){
 Terreng.prototype.tegn = function(){
     ctx.save();
     ctx.rotate(0);
-    this.lineær();
+    ctx.fillStyle = this.farge;
+    this.tegnLineær();
     ctx.restore();
 };
 
-Terreng.prototype.lineær = function(){
-    ctx.strokeStyle = "blue";
-    ctx.strokeWidth = "4px";
-    ctx.fillStyle = "blue";
+Terreng.prototype.tegnLineær = function(){
     ctx.beginPath();
-    ctx.translate(0,0);
     for(var i = 0; i < this.nøkkelpunktKart.length; i++) {
         var nåværende = this.nøkkelpunktKart[i];
         var lineFunction = (i > 0) ? ctx.lineTo.bind(ctx) : ctx.moveTo.bind(ctx);
@@ -70,10 +68,7 @@ Terreng.prototype.lineær = function(){
     ctx.fill();
 };
 
-Terreng.prototype.kurve = function(){
-    ctx.lineWidth = "5px";
-    ctx.strokeStyle = "red";
-    ctx.translate(0,0);
+Terreng.prototype.tegnSomKurve = function(){
     ctx.beginPath();
     for(var i = 0; i < this.nøkkelpunktKart.length; i++){
         var nåværende = this.nøkkelpunktKart[i];
