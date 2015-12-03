@@ -8,17 +8,16 @@
  */
 
 
-function Spill() {
-    this.terreng = new Terreng([[0,400 - 150,20,1],[300,400 - 300,20,1],[600,400 - 60,20,1]]);
-    this.terreng.settSomNåværende();
-    this.spiller = new Spiller("CommandoCompe.png",-10,0,0,50);
-
-    this.oppdater = function(){
-        this.terreng.oppdater();
-        this.spiller.oppdater();
-    };
-    this.tegn = function(){
-        this.spiller.tegn();
-        this.terreng.tegn();
-    };
+function Spiller(bane,x,y,bredde,høyde){
+    Enhet.call(this,bane,x,y,bredde,høyde);
 }
+
+Spiller.prototype = Object.create(Enhet.prototype);
+Spiller.prototype.constructor = Spiller;
+
+Spiller.prototype.oppdater = function(){
+    Enhet.prototype.oppdater.call(this);
+
+    this.y = Terreng.nåværende.hentLineærY(this.x+this.bredde/2) - this.høyde;
+    this.x += 80 * clock.delta;
+};

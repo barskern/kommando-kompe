@@ -12,6 +12,34 @@ function Terreng(nøkkelpunktKart){
     this.nøkkelpunktKart = nøkkelpunktKart; // [[x,y,(høyde),type]]
 }
 
+
+//Statiske medlemmer av klassen
+
+Terreng.nåværende = null;
+
+Terreng.typer = (function(){
+
+    function Egenskap(bane){
+        this.bane = bane;
+    }
+
+    return {
+        1: "GRESS",
+        2: "JORD",
+        egenskaper: {
+            "GRESS": new Egenskap("CommandoCompe.png"),
+            "JORD": new Egenskap("CommandoCompe.png")
+        }
+    };
+})();
+
+
+//Medlemsfunksjoner
+
+Terreng.prototype.settSomNåværende = function(){
+    Terreng.nåværende = this;
+};
+
 Terreng.prototype.oppdater = function(){
 
 };
@@ -93,19 +121,5 @@ Terreng.prototype.hentType = function(id){
     return Terreng.typer[id];
 };
 
-Terreng.typer = (function(){
 
-    function Egenskap(bane){
-        this.bane = bane;
-    }
-
-    return {
-        1: "GRESS",
-        2: "JORD",
-        egenskaper: {
-            "GRESS": new Egenskap("CommandoCompe.png"),
-            "JORD": new Egenskap("CommandoCompe.png")
-        }
-    };
-});
 
