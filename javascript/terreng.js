@@ -44,7 +44,31 @@ Terreng.prototype.settSomNåværende = function(){
     Terreng.nåværende = this;
 };
 
-Terreng.prototype.oppdater = function(){};
+Terreng.prototype.oppdater = function(){
+    BildeObjekt.prototype.oppdater.call(this);
+    if(this.x < -2 * this.bredde){
+        this.x = 0;
+    }
+    if(this.x > 0) {
+        this.x = -2 * this.bredde;
+    }
+};
+
+Terreng.prototype.tegn = function(){
+    //console.log("første: x = "+this.x+" | y ="+this.y+" | b = "+this.bredde+" | h = "+this.høyde);
+    BildeObjekt.prototype.tegn.call(this);
+    var midlertidigX = this.x;
+    this.x += this.bredde;
+    this.reflekterX = true;
+    //console.log("andre: x = "+this.x+" | y ="+this.y+" | b = "+this.bredde+" | h = "+this.høyde);
+    BildeObjekt.prototype.tegn.call(this);
+    this.reflekterX = false;
+    this.x += this.bredde;
+    //console.log("tredje: x = "+this.x+" | y ="+this.y+" | b = "+this.bredde+" | h = "+this.høyde);
+    BildeObjekt.prototype.tegn.call(this);
+    this.x = midlertidigX;
+};
+
 
 Terreng.prototype.tegnLineær = function(){
     ctx.beginPath();

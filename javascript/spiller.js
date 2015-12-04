@@ -25,6 +25,15 @@ Spiller.prototype.constructor = Spiller;
 
 Spiller.prototype.oppdater = function(){
     this.inngangsdata.oppdater();
+
+    if(this.x < 60){
+        Terreng.nåværende.x -= this.fartX * clock.delta;
+        this.x = 60;
+    }
+    if(this.x > ctx.canvas.width - 60 - this.bredde){
+        Terreng.nåværende.x -= this.fartX * clock.delta;
+        this.x = ctx.canvas.width - 60 - this.bredde;
+    }
     Enhet.prototype.oppdater.call(this);
 };
 
