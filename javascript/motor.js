@@ -16,7 +16,7 @@ var motor = (function(){
         clock = {
             nå: 0,
             sisteTid: 0,
-            delta: 0,
+            delta: 0, //sekunder
             oppdater: function (){
                 this.nå = Date.now();
                 this.delta = (this.nå - this.sisteTid) / 1000.0;

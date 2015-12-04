@@ -16,9 +16,12 @@ function Enhet(bane,x,y,bredde,høyde){
     this.høyde = høyde;
 
     this.fartX = 0;
-    this.fartsgrenseX = 6;
+    this.akselerasjonX = 0;
+    this.fartsgrenseX = 4 * Spill.pikselPerMeter;
+    this.deakselerasjonX = 10 * Spill.pikselPerMeter;
 
     this.fartY = 0;
+
 
     this.settBreddeHøyde = function(){
         var bilde = Ressurser.hentBilde(this.bane);
@@ -28,33 +31,49 @@ function Enhet(bane,x,y,bredde,høyde){
     Ressurser.narKlar(this.settBreddeHøyde.bind(this));
 }
 
-Enhet.gravitasjon = 9.81;
+Enhet.gravitasjon = 9.81; // m/s^2
 
 //Medlemsfunksjoner
 
 Enhet.prototype.move = function(retning, mengde){
-    if(((this.fartX > -this.fartsgrenseX || retning === 1) && (this.fartX < this.fartsgrenseX || retning === -1))){
-        this.fartX += (retning * mengde);
+    if((this.fartX > -this.fartsgrenseX || retning === 1) && (this.fartX < this.fartsgrenseX || retning === -1))
+        this.akselerasjonX = (retning * mengde) * Spill.pikselPerMeter;
+    else {
+        this.akselerasjonX = 0;
+        this.fartX = (this.fartX/Math.abs(this.fartX))*this.fartsgrenseX;
     }
+    if(this.fartX * this.akselerasjonX < 0)
+        this.akselerasjonX += (this.akselerasjonX/Math.abs(this.akselerasjonX)) * this.deakselerasjonX;
 };
 
 Enhet.prototype.hopp = function(mengde){
-    if(this.y + this.høyde + 10 > this.terrengHøyde && this.y + this.høyde - 10 < this.terrengHøyde)
-        this.fartY = mengde;
+    if(this.y + this.høyde + 5 > this.terrengHøyde && this.y + this.høyde - 5 < this.terrengHøyde)
+        this.fartY = mengde * Spill.pikselPerMeter;
 };
 
 Enhet.prototype.oppdater = function(){
-    this.x += Spill.pikslerPerMeter * this.fartX * clock.delta;
-    this.y -= Spill.pikslerPerMeter * this.fartY * clock.delta;
+    this.fartX += this.akselerasjonX * clock.delta;
+
+    if(this.fartX * this.akselerasjonX < 0
+        && -(this.deakselerasjonX * clock.delta) < this.fartX
+        && this.fartX < this.deakselerasjonX * clock.delta)
+        this.fartX = 0;
+
+    this.akselerasjonX = ((-this.fartX/Math.abs(this.fartX)) * this.deakselerasjonX || 0);
+
+    this.x += this.fartX * clock.delta;
+
     this.terrengHøyde = Terreng.nåværende.hentLineærY(this.x + this.bredde/2);
+
+    this.y -= this.fartY * clock.delta;
 
     if(this.y + this.høyde > this.terrengHøyde)
         this.y = this.terrengHøyde - this.høyde;
 
     if(this.y + this.høyde !== this.terrengHøyde)
-        this.fartY -= Spill.pikslerPerMeter/15 * Enhet.gravitasjon * clock.delta;
+        this.fartY -= Spill.pikselPerMeter * Enhet.gravitasjon * clock.delta;
     else
-        this.fartY = 0;
+        this.fartY = 0
 };
 
 Enhet.prototype.tegn = function(){
