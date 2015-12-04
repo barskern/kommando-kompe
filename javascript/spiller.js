@@ -15,8 +15,8 @@ function Spiller(bane,x,y,bredde,høyde){
     this.hastighetY = 5;
 
     this.inngangsdata = new Inngangsdata();
-    this.inngangsdata.leggTilTrykkeEvent('keydown',68,this.move.bind(this,1,this.hastighetX));    //Høyre D
-    this.inngangsdata.leggTilTrykkeEvent('keydown',65,this.move.bind(this,-1,this.hastighetX));   //Venstre A
+    this.inngangsdata.leggTilTrykkeEvent('keydown',68,this.settAkselerasjon.bind(this,1,this.hastighetX));    //Høyre D
+    this.inngangsdata.leggTilTrykkeEvent('keydown',65,this.settAkselerasjon.bind(this,-1,this.hastighetX));   //Venstre A
     this.inngangsdata.leggTilTrykkeEvent('keydown',32,this.hopp.bind(this,this.hastighetY));       //Hopp Mellomrom
 }
 

@@ -35,7 +35,7 @@ Enhet.gravitasjon = 9.81; // m/s^2
 
 //Medlemsfunksjoner
 
-Enhet.prototype.move = function(retning, mengde){
+Enhet.prototype.settAkselerasjon = function(retning, mengde){
     if((this.fartX > -this.fartsgrenseX || retning === 1) && (this.fartX < this.fartsgrenseX || retning === -1))
         this.akselerasjonX = (retning * mengde) * Spill.pikselPerMeter;
     else {
