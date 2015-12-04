@@ -16,7 +16,7 @@ function Våpen(type,x,y,bredde,høyde){
 Våpen.typer = (function(){
     function Egenskaper(bane,relativeAnkerpunkt){
         this.bane = bane;
-        this.relativeAnkerpunkt = relativeAnkerpunkt;
+        this.relativtAnkerpunkt = relativeAnkerpunkt;
     }
     return {
         "MP5": new Egenskaper("mp5_1660x672.png",[(892/1660),(354/672)])
@@ -28,8 +28,10 @@ Våpen.prototype.constructor = Våpen;
 
 Våpen.prototype.oppdater = function(eier){
     if(eier){
-        this.x = eier.x + ((eier.våpenAnkerpunkt[0] - this.type.relativeAnkerpunkt[0] * this.bredde) * eier.retningFartX);
-        this.y = eier.y + eier.våpenAnkerpunkt[1] - this.type.relativeAnkerpunkt[1] * this.høyde;
+        var eierAnkerX = Math.abs((eier.retningFartX < 0 ? 1 : 0) - eier.relativtVåpenAnkerpunkt[0]) * eier.bredde;
+        var våpenAnkerY = Math.abs((eier.retningFartX < 0 ? 1 : 0) - this.type.relativtAnkerpunkt[0]) * this.bredde;
+        this.x = eier.x + eierAnkerX - våpenAnkerY;
+        this.y = eier.y + (eier.relativtVåpenAnkerpunkt[1] * eier.høyde) - (this.type.relativtAnkerpunkt[1] * this.høyde);
         this.retningFartX = eier.retningFartX;
     }
     this.reflekterX = (this.retningFartX < 0);

@@ -18,11 +18,7 @@ function Enhet(bane,x,y,bredde,høyde){
     this.fartY = 0;
 
     this.relativtVåpenAnkerpunkt = [(86/126),(52/259)];
-    this.våpenAnkerpunkt = [0,0];
     this.våpen = new Våpen(Våpen.typer.MP5,0,0,0.8*Spill.pikselPerMeter,0);
-    this.leggTilTilbakekallPåBreddeHøyde(function(){
-        this.våpenAnkerpunkt = [this.relativtVåpenAnkerpunkt[0] * this.bredde,this.relativtVåpenAnkerpunkt[1] * this.høyde];
-    }.bind(this));
 }
 
 Enhet.prototype = Object.create(BildeObjekt.prototype);
