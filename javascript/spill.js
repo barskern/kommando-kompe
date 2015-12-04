@@ -9,19 +9,19 @@
 
 
 function Spill() {
-    this.terreng = new Terreng([[0,400-90,20,1],[100,400-120,20,1],[200,400-120,20,1],[300,400-120,20,1],[600,400-60,20,1]]);
+    this.terreng = new Terreng("landskapEksempel640x417.jpg", [[0,400-44,1],[600,400-44,1]]);
     this.terreng.settSomNåværende();
-    this.spiller = new Spiller("KommandoKalleFigur.png",100,400-140,0,1.8 * Spill.pikselPerMeter);
+    this.spiller = new Spiller("KommandoKalleFigur.png",100,400-44,0,1.8 * Spill.pikselPerMeter);
 
     this.oppdater = function(){
         this.terreng.oppdater();
         this.spiller.oppdater();
     };
     this.tegn = function(){
-        this.spiller.tegn();
         this.terreng.tegn();
+        this.spiller.tegn();
     };
 }
 
-Spill.pikselPerMeter = 50;
+Spill.pikselPerMeter = 65;
 Spill.meterPerPiksel = 1/Spill.pikselPerMeter;

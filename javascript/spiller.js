@@ -11,11 +11,13 @@
 function Spiller(bane,x,y,bredde,høyde){
     Enhet.call(this,bane,x,y,bredde,høyde);
 
-    this.inngangsdata = new Inngangsdata();
-    this.inngangsdata.leggTilTrykkeEvent(['keydown','keyup'],68,this.move.bind(this,1,10));    //Høyre D
-    this.inngangsdata.leggTilTrykkeEvent(['keydown','keyup'],65,this.move.bind(this,-1,10));   //Venstre A
-    this.inngangsdata.leggTilTrykkeEvent(['keydown','keyup'],32,this.hopp.bind(this,4));      //Hopp Mellomrom
+    this.hastighetX = 15;
+    this.hastighetY = 5;
 
+    this.inngangsdata = new Inngangsdata();
+    this.inngangsdata.leggTilTrykkeEvent('keydown',68,this.move.bind(this,1,this.hastighetX));    //Høyre D
+    this.inngangsdata.leggTilTrykkeEvent('keydown',65,this.move.bind(this,-1,this.hastighetX));   //Venstre A
+    this.inngangsdata.leggTilTrykkeEvent('keydown',32,this.hopp.bind(this,this.hastighetY));       //Hopp Mellomrom
 }
 
 Spiller.prototype = Object.create(Enhet.prototype);

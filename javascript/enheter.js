@@ -15,13 +15,13 @@ function Enhet(bane,x,y,bredde,høyde){
     this.bredde = bredde;
     this.høyde = høyde;
 
+    this.retningFartX = 1;
     this.fartX = 0;
     this.akselerasjonX = 0;
     this.fartsgrenseX = 4 * Spill.pikselPerMeter;
     this.deakselerasjonX = 10 * Spill.pikselPerMeter;
 
     this.fartY = 0;
-
 
     this.settBreddeHøyde = function(){
         var bilde = Ressurser.hentBilde(this.bane);
@@ -40,7 +40,7 @@ Enhet.prototype.move = function(retning, mengde){
         this.akselerasjonX = (retning * mengde) * Spill.pikselPerMeter;
     else {
         this.akselerasjonX = 0;
-        this.fartX = (this.fartX/Math.abs(this.fartX))*this.fartsgrenseX;
+        this.fartX = this.retningFartX * this.fartsgrenseX;
     }
     if(this.fartX * this.akselerasjonX < 0)
         this.akselerasjonX += (this.akselerasjonX/Math.abs(this.akselerasjonX)) * this.deakselerasjonX;
@@ -59,9 +59,10 @@ Enhet.prototype.oppdater = function(){
         && this.fartX < this.deakselerasjonX * clock.delta)
         this.fartX = 0;
 
-    this.akselerasjonX = ((-this.fartX/Math.abs(this.fartX)) * this.deakselerasjonX || 0);
+    this.akselerasjonX = (Math.abs(this.fartX) > 1 && (-this.retningFartX) * this.deakselerasjonX) || 0;
 
     this.x += this.fartX * clock.delta;
+    this.retningFartX = (this.fartX != 0 && this.fartX/Math.abs(this.fartX)) || this.retningFartX;
 
     this.terrengHøyde = Terreng.nåværende.hentLineærY(this.x + this.bredde/2);
 
@@ -79,7 +80,10 @@ Enhet.prototype.oppdater = function(){
 Enhet.prototype.tegn = function(){
     var bilde = Ressurser.hentBilde(this.bane);
     if(bilde) {
-        ctx.drawImage(bilde, this.x, this.y, this.bredde, this.høyde);
+        ctx.save();
+        ctx.setTransform(this.retningFartX,0,0,1,this.x + (this.bredde/2),this.y + (this.høyde/2));
+        ctx.drawImage(bilde, -this.bredde/2, -this.høyde/2, this.bredde, this.høyde);
+        ctx.restore();
     }
 };
 

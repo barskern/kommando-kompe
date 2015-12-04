@@ -9,40 +9,44 @@
 
 
 function Inngangsdata() {
-    var sjekkTaster = false, tasterNede = {}, tasterTilbakekall = {};
+    var sjekkTasterBool = false, tasterNede = { keydown:  {}, keyup: {} }, tasterTilbakekall = { keydown:  {}, keyup: {} };
 
-    this.tastatur = {
-        keydown:  {},
-        keyup: {}
-    };
+    this.tastatur = { keydown:  {}, keyup: {} };
+
+
     this.håndtererTrykk = function(e){
         var tilbakekall = this.tastatur[e.type][e.keyCode];
         if(tilbakekall){
-            sjekkTaster = true;
-            tasterNede[e.keyCode] = true;
-            tasterTilbakekall[e.keyCode] = tilbakekall;
-        } else if(!tilbakekall && e.type === "keyup"){
-            tasterNede[e.keyCode] = false;
-            sjekkTaster = false;
-            Object.keys(tasterNede).forEach(function(tasteKode) {
-                if(tasterNede[tasteKode]){
-                    sjekkTaster = true;
-                }
-            });
+            tasterNede[e.keyCode] = (e.type === "keydown" && [e.type, true]) || [e.type, false];
+            sjekkTasterBool = tasterNede[e.keyCode][0];
+            tasterTilbakekall[e.type][e.keyCode] = tilbakekall;
+        }
+        if(e.type === "keyup"){
+            tasterNede[e.keyCode] = [e.type, false];
+            try {
+                tasterTilbakekall[e.type][e.keyCode]();
+            } catch (err){}
         }
     };
 
-    this.oppdater = function(){
-        if(sjekkTaster){
-            Object.keys(tasterNede).forEach(function(tasteKode){
-                if(tasterNede[tasteKode]) {
-                    try {
-                        tasterTilbakekall[tasteKode]();
-                    } catch (err) {
+    function sjekkTaster(){
+        sjekkTasterBool = false;
+        Object.keys(tasterNede).forEach(function(tasteKode) {
+            var tastNede = tasterNede[tasteKode];
+            if(tastNede[1]){
+                sjekkTasterBool = true;
+                try {
+                    tasterTilbakekall[tastNede[0]][tasteKode]();
+                } catch (err) {
 
-                    }
                 }
-            });
+            }
+        });
+    }
+
+    this.oppdater = function(){
+        if(sjekkTasterBool){
+            sjekkTaster();
         }
     };
 
@@ -58,7 +62,7 @@ Inngangsdata.prototype.leggTilTrykkeEvent = function(eventType,karakterEllerKode
                     || (eventType[i] === "keydown" && tilbakekall));
             }
     } else {
-        this.tastatur[eventType][(karakterEllerKode.length === 1 && charCodeAt(0) || karakterEllerKode)] = tilbakekall;
+        this.tastatur[eventType][karakterEllerKode] = tilbakekall;
     }
 
 };

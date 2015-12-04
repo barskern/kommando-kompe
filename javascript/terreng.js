@@ -8,9 +8,12 @@
  */
 
 
-function Terreng(nøkkelpunktKart){
+function Terreng(bane,nøkkelpunktKart){
+    Ressurser.lastBilder(bane);
+    this.bane = bane;
     this.nøkkelpunktKart = nøkkelpunktKart; // [[x,y,(høyde),type]]
     this.farge = "black"; //TODO Midlertidig farge, må bli et bilde under en linje
+
 }
 
 
@@ -46,11 +49,13 @@ Terreng.prototype.oppdater = function(){
 };
 
 Terreng.prototype.tegn = function(){
-    ctx.save();
-    ctx.rotate(0);
-    ctx.fillStyle = this.farge;
-    this.tegnLineær();
-    ctx.restore();
+    var bilde = Ressurser.hentBilde(this.bane);
+    if(bilde){
+        ctx.save();
+        ctx.transform(1,0,0,1,bilde.width/2,bilde.height/2);
+        ctx.drawImage(bilde,-bilde.width/2,-bilde.height/2,bilde.width,bilde.height);
+        ctx.restore();
+    }
 };
 
 Terreng.prototype.tegnLineær = function(){
