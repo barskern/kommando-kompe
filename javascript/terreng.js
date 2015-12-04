@@ -9,13 +9,13 @@
 
 
 function Terreng(bane,nøkkelpunktKart){
-    Ressurser.lastBilder(bane);
-    this.bane = bane;
+    BildeObjekt.call(this,bane,0,0,600,400);
     this.nøkkelpunktKart = nøkkelpunktKart; // [[x,y,(høyde),type]]
     this.farge = "black"; //TODO Midlertidig farge, må bli et bilde under en linje
-
 }
 
+Terreng.prototype = Object.create(BildeObjekt.prototype);
+Terreng.prototype.constructor = Terreng;
 
 //Statiske medlemmer av klassen
 
@@ -44,19 +44,7 @@ Terreng.prototype.settSomNåværende = function(){
     Terreng.nåværende = this;
 };
 
-Terreng.prototype.oppdater = function(){
-
-};
-
-Terreng.prototype.tegn = function(){
-    var bilde = Ressurser.hentBilde(this.bane);
-    if(bilde){
-        ctx.save();
-        ctx.transform(1,0,0,1,bilde.width/2,bilde.height/2);
-        ctx.drawImage(bilde,-bilde.width/2,-bilde.height/2,bilde.width,bilde.height);
-        ctx.restore();
-    }
-};
+Terreng.prototype.oppdater = function(){};
 
 Terreng.prototype.tegnLineær = function(){
     ctx.beginPath();

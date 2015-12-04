@@ -9,8 +9,8 @@
 
 
 function Spill() {
-    this.underKonstruksjon = new Enhet("underKonstruksjonBannere.png",0,0,600,0); //TODO Midlertidig banner for å vise at siden er under konstruksjon
-    this.terreng = new Terreng("landskapEksempel640x417.jpg", [[0,400-44,1],[600,400-44,1]]);
+    this.underKonstruksjon = new BildeObjekt("underKonstruksjonBannere.png",0,0,600,0); //TODO Midlertidig banner for å vise at siden er under konstruksjon
+    this.terreng = new Terreng("landskapEksempel640x417.jpg",[[0,400-60,1],[600,400-60,1]]);
     this.terreng.settSomNåværende();
     this.spiller = new Spiller("KommandoKalleFigur.png",100,400-44,0,1.8 * Spill.pikselPerMeter);
 
@@ -25,5 +25,4 @@ function Spill() {
     };
 }
 
-Spill.pikselPerMeter = 65;
-Spill.meterPerPiksel = 1/Spill.pikselPerMeter;
+Spill.pikselPerMeter = 110;

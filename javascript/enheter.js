@@ -8,30 +8,28 @@
  */
 
 function Enhet(bane,x,y,bredde,høyde){
-    Ressurser.lastBilder(bane);
-    this.bane = bane;
-    this.x = x;
-    this.y = y;
-    this.bredde = bredde;
-    this.høyde = høyde;
-
-    this.retningFartX = 1;
+    BildeObjekt.call(this,bane,x,y,bredde,høyde);
     this.fartX = 0;
     this.akselerasjonX = 0;
     this.fartsgrenseX = 4 * Spill.pikselPerMeter;
     this.deakselerasjonX = 10 * Spill.pikselPerMeter;
+    this.retningFartX = 1;
 
     this.fartY = 0;
 
-    this.settBreddeHøyde = function(){
-        var bilde = Ressurser.hentBilde(this.bane);
-        this.bredde = ((this.bredde === 0 && (bilde.width / bilde.height) * this.høyde) || this.bredde);
-        this.høyde = ((this.høyde === 0 && (bilde.height / bilde.width) * this.bredde) || this.høyde);
-    };
-    Ressurser.narKlar(this.settBreddeHøyde.bind(this));
+    this.relativtVåpenAnkerpunkt = [(86/126),(52/259)];
+    this.våpenAnkerpunkt = [0,0];
+    this.våpen = new Våpen(Våpen.typer.MP5,0,0,0.8*Spill.pikselPerMeter,0);
+    this.leggTilTilbakekallPåBreddeHøyde(function(){
+        this.våpenAnkerpunkt = [this.relativtVåpenAnkerpunkt[0] * this.bredde,this.relativtVåpenAnkerpunkt[1] * this.høyde];
+    }.bind(this));
 }
 
+Enhet.prototype = Object.create(BildeObjekt.prototype);
+Enhet.prototype.constructor = Enhet;
+
 Enhet.gravitasjon = 9.81; // m/s^2
+
 
 //Medlemsfunksjoner
 
@@ -52,42 +50,38 @@ Enhet.prototype.hopp = function(mengde){
 };
 
 Enhet.prototype.oppdater = function(){
-    this.fartX += this.akselerasjonX * clock.delta;
+    BildeObjekt.prototype.oppdater.call(this);
+    this.reflekterX = (this.retningFartX < 0);
+    this.oppdaterX();
+    this.terrengHøyde = Terreng.nåværende.hentLineærY(this.x + this.bredde/2);
+    this.oppdaterY();
+    this.våpen.oppdater(this);
+};
 
+Enhet.prototype.tegn = function(){
+    BildeObjekt.prototype.tegn.call(this);
+    this.våpen.tegn();
+};
+
+Enhet.prototype.oppdaterX = function(){
+    this.fartX += this.akselerasjonX * clock.delta;
     if(this.fartX * this.akselerasjonX < 0
         && -(this.deakselerasjonX * clock.delta) < this.fartX
         && this.fartX < this.deakselerasjonX * clock.delta)
         this.fartX = 0;
-
     this.akselerasjonX = (Math.abs(this.fartX) > 1 && (-this.retningFartX) * this.deakselerasjonX) || 0;
-
     this.x += this.fartX * clock.delta;
     this.retningFartX = (this.fartX != 0 && this.fartX/Math.abs(this.fartX)) || this.retningFartX;
+};
 
-    this.terrengHøyde = Terreng.nåværende.hentLineærY(this.x + this.bredde/2);
-
+Enhet.prototype.oppdaterY = function(){
     this.y -= this.fartY * clock.delta;
-
     if(this.y + this.høyde > this.terrengHøyde)
         this.y = this.terrengHøyde - this.høyde;
-
     if(this.y + this.høyde !== this.terrengHøyde)
         this.fartY -= Spill.pikselPerMeter * Enhet.gravitasjon * clock.delta;
     else
         this.fartY = 0
 };
-
-Enhet.prototype.tegn = function(){
-    var bilde = Ressurser.hentBilde(this.bane);
-    if(bilde) {
-        ctx.save();
-        ctx.setTransform(this.retningFartX,0,0,1,this.x + (this.bredde/2),this.y + (this.høyde/2));
-        ctx.drawImage(bilde, -this.bredde/2, -this.høyde/2, this.bredde, this.høyde);
-        ctx.restore();
-    }
-};
-
-
-
 
 
