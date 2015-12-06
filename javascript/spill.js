@@ -9,7 +9,6 @@
 
 
 function Spill() {
-    this.underKonstruksjon = new BildeObjekt("underKonstruksjonBannere.png",0,0,600,0); //TODO Midlertidig banner for å vise at siden er under konstruksjon
     this.terreng = new Terreng("landskapEksempel640x417.jpg",[[-Number.MAX_VALUE,400-60,1],[Number.MAX_VALUE,400-60,1]]);
     this.terreng.settSomNåværende();
     this.spiller = new Spiller("KommandoKalleFigur.png",100,400-44,0,1.8 * Spill.pikselPerMeter);
@@ -21,7 +20,6 @@ function Spill() {
     this.tegn = function(){
         this.terreng.tegn();
         this.spiller.tegn();
-        this.underKonstruksjon.tegn();
     };
 }
 
