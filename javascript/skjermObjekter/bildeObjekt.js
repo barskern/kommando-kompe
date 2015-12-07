@@ -22,18 +22,13 @@ function BildeObjekt(bane,x,y,bredde,høyde){
         this.bredde = ((this.bredde === 0 && (bilde.width / bilde.height) * this.høyde) || this.bredde);
         this.høyde = ((this.høyde === 0 && (bilde.height / bilde.width) * this.bredde) || this.høyde);
     };
-
     Ressurser.narKlar(this.settBreddeHøyde.bind(this));
 }
 
-BildeObjekt.prototype.leggTilTilbakekallPåBreddeHøyde = function(tilbakekall){
-    Ressurser.narKlar(tilbakekall);
-};
-
 BildeObjekt.prototype.oppdater = function(){};
 
-BildeObjekt.prototype.bevegX = function(retning,mendge){
-    this.x += (retning * mendge * Spill.pikselPerMeter);
+BildeObjekt.prototype.bevegX = function(retning,mendgeIMeter){
+    this.x += (retning * mendgeIMeter * Spill.pikselPerMeter);
 };
 
 BildeObjekt.prototype.tegn = function(){

@@ -66,6 +66,11 @@ Terreng.prototype.tegn = function(){
     this.x += this.bredde;
     //console.log("tredje: x = "+this.x+" | y ="+this.y+" | b = "+this.bredde+" | h = "+this.høyde);
     BildeObjekt.prototype.tegn.call(this);
+    this.x += this.bredde;
+    this.reflekterX = true;
+    //console.log("fjerde: x = "+this.x+" | y ="+this.y+" | b = "+this.bredde+" | h = "+this.høyde);
+    BildeObjekt.prototype.tegn.call(this);
+    this.reflekterX = false;
     this.x = midlertidigX;
 };
 

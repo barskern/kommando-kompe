@@ -14,12 +14,13 @@ function Våpen(type,x,y,bredde,høyde){
 }
 
 Våpen.typer = (function(){
-    function Egenskaper(bane,relativeAnkerpunkt){
+    function Egenskaper(bane,lyd,relativeAnkerpunkt){
         this.bane = bane;
+        this.lyd = lyd;
         this.relativtAnkerpunkt = relativeAnkerpunkt;
     }
     return {
-        "MP5": new Egenskaper("mp5_1660x672.png",[(892/1660),(354/672)])
+        "MP5": new Egenskaper("mp5_1660x672.png",false,[(892/1660),(354/672)])
     };
 })();
 
