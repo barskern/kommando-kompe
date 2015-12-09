@@ -13,7 +13,7 @@ var motor = (function(){
         canvas = doku.createElement('canvas'),
         ctx = canvas.getContext('2d'),
         spill = new Spill(),
-        clock = {
+        klokke = {
             nå: 0,
             sisteTid: 0,
             delta: 0, //sekunder
@@ -28,25 +28,20 @@ var motor = (function(){
     canvas.height = 400;
 
     function main(){
-        clock.oppdater();
-
+        klokke.oppdater();
         spill.oppdater();
-        ctx.clearRect(0,0,canvas.width,canvas.height);
-        ctx.fillStyle = "white";
-        ctx.fillRect(0,0,canvas.width,canvas.height);
         spill.tegn();
-
         requestAnimationFrame(main);
     }
 
     function init(){
         doku.body.appendChild(canvas);
-        clock.sisteTid = Date.now();
+        klokke.sisteTid = Date.now();
         main();
     }
 
-    Ressurser.narKlar(init);
+    Ressurser.nårRessurserKlare(init);
 
     window.ctx = ctx;
-    window.clock = clock;
+    window.clock = klokke;
 })();

@@ -11,52 +11,88 @@
  * Et enkelt verktøy for a laste bilder og lagre de i cache.
  */
 (function(){
-    var bildeRessurser = {}, laster = {}, tilbakekall = [];
+    var laster = {}, tilbakekall = [];
 
-    /**
-     * Tar enten en bane eller array med baner og laster den/dem.
-     * @param baneEllerArray
-     */
-    function lastBilder(baneEllerArray){
-        if(baneEllerArray instanceof Array){
-            baneEllerArray.forEach(function(bane){
-                if(!hentBilde(bane))
-                    _lastBilde(bane);
-            });
-        } else {
-            if(!hentBilde(baneEllerArray))
-                _lastBilde(baneEllerArray);
-        }
-    }
-
-    /**
-     * Laster bildet og lagrer det i bildeRessurser objektet.
-     * @param bane banen til bildet
-     * @returns verdien av bildet hvis det allerede er lastet
-     */
-    function _lastBilde(bane){
-        var bilde = new Image();
-        bilde.onload = function(){
-            bildeRessurser[bane] = bilde;
-
-            if(ressurserLastet()){
-                tilbakekall.forEach(function(tk){
-                    tk();
-                });
+    var bildeHåndterer = {
+        /**
+         * Alle bildene som er lastet inn i spillet er linket med banen sin i lastet-listen.
+         */
+        lastet: {},
+        /**
+         * Hvert bilden som er et atlas kan hentes her med informasjon om atlaset. Håndterer atlasene.
+         */
+        atlas: {
+            XMLer: {},
+            last:function(bane){
+                var sisteIndeksPunktum = bane.lastIndexOf('.');
+                console.log();
+                filHåndterer.lastXML("bilder/atlas/"+bane.slice(0,bane.lastIndexOf('.')) + ".xml");
+                bildeHåndterer._last("atlas/"+bane);
+            },
+            hent: function(bane, bildeNavn){
+                var XMLDoku = bildeHåndterer.atlas.XMLer[bane];
+                return XMLDoku.getElementsByTagName('Kart')[0].getElementById(bildeNavn);
             }
-        };
-        bildeRessurser[bane] = false;
-        bilde.src = "bilder/"+bane;
-    }
+        },
+        /**
+         * Tar enten en bane eller array med baner og laster den/dem.
+         * @param baneEllerListe en bane eller en listen med baner
+         */
+        last: function(baneEllerListe){
+            if(baneEllerListe instanceof Array){
+                baneEllerListe.forEach(function(bane){
+                    if(!bildeHåndterer.hent(bane))
+                        bildeHåndterer._last(bane);
+                });
+            } else {
+                if(!bildeHåndterer.hent(baneEllerListe))
+                    bildeHåndterer._last(baneEllerListe);
+            }
+        },
+        /**
+         * Laster bildet og lagrer det i bildelastet objektet.
+         * @param bane banen til bildet
+         * @returns verdien av bildet hvis det allerede er lastet
+         */
+        _last: function(bane){
+            var bilde = new Image();
+            bilde.onload = function(){
+                bildeHåndterer.lastet[bane] = bilde;
 
-    /**
-     * Henter et bilde fra ressurs arrayen
-     * @param bane banen til bildet
-     * @returns bilde
-     */
-    function hentBilde(bane){
-        return bildeRessurser[bane];
-    }
+                if(ressurserLastet()){
+                    tilbakekall.forEach(function(tk){
+                        tk();
+                    });
+                }
+            };
+            bildeHåndterer.lastet[bane] = false;
+            bilde.src = "bilder/"+bane;
+        },
+        /**
+         * Henter et bildeHåndterer fra ressurs arrayen
+         * @param bane banen til bildet
+         * @returns bildeHåndterer
+         */
+        hent: function(bane){
+            return bildeHåndterer.lastet[bane];
+        }
+    };
+
+    var filHåndterer = {
+        lastXML: function(bane){
+            console.log(bane);
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function(){
+                if(xhttp.readyState == 4){
+
+                }
+            };
+
+        },
+        hentXML: function(){
+
+        }
+    };
 
     /**
      * Sjekker om alle bildene er lastet.
@@ -64,8 +100,8 @@
      */
     function ressurserLastet(){
         var klar = true;
-        for(var b in bildeRessurser){
-            if(bildeRessurser.hasOwnProperty(b) && !bildeRessurser[b]){
+        for(var b in bildeHåndterer.lastet){
+            if(bildeHåndterer.lastet.hasOwnProperty(b) && !bildeHåndterer.lastet[b]){
                 klar = false;
                 break;
             }
@@ -78,14 +114,24 @@
      * ferdig lastet.
      * @param tk en funksjon som blir kalt nar ressursene er lastet
      */
-    function narKlar(tk){
+    function nårRessurserKlare(tk){
         tilbakekall.push(tk);
     }
 
     window.Ressurser = {
-        lastBilder: lastBilder,
-        hentBilde: hentBilde,
-        narKlar: narKlar,
+        bildeHåndterer: {
+            last: bildeHåndterer.last,
+            hent: bildeHåndterer.hent,
+            atlas: {
+                last: bildeHåndterer.atlas.last,
+                hent: bildeHåndterer.atlas.hent
+            }
+        },
+        filHåndterer: {
+            last: filHåndterer.lastXML,
+            hent: filHåndterer.hentXML
+        },
+        nårRessurserKlare: nårRessurserKlare,
         ressurserLastet: ressurserLastet
     };
 

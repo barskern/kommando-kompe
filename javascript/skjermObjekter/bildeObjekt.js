@@ -9,7 +9,7 @@
 
 
 function BildeObjekt(bane,x,y,bredde,høyde){
-    Ressurser.lastBilder(bane);
+    Ressurser.bildeHåndterer.last(bane);
     this.bane = bane;
     this.reflekterX = false;
     this.x = x;
@@ -17,22 +17,23 @@ function BildeObjekt(bane,x,y,bredde,høyde){
     this.bredde = bredde;
     this.høyde = høyde;
 
+    this.matrise = Matrise.identitet();
+
     this.settBreddeHøyde = function(){
-        var bilde = Ressurser.hentBilde(this.bane);
+        var bilde = Ressurser.bildeHåndterer.hent(this.bane);
         this.bredde = ((this.bredde === 0 && (bilde.width / bilde.height) * this.høyde) || this.bredde);
         this.høyde = ((this.høyde === 0 && (bilde.height / bilde.width) * this.bredde) || this.høyde);
     };
-    Ressurser.narKlar(this.settBreddeHøyde.bind(this));
+    if(this.høyde === 0 || this.bredde === 0){
+        Ressurser.nårRessurserKlare(this.settBreddeHøyde.bind(this));
+    }
+
 }
 
 BildeObjekt.prototype.oppdater = function(){};
 
-BildeObjekt.prototype.bevegX = function(retning,mendgeIMeter){
-    this.x += (retning * mendgeIMeter * Spill.pikselPerMeter);
-};
-
 BildeObjekt.prototype.tegn = function(){
-    var bilde = Ressurser.hentBilde(this.bane);
+    var bilde = Ressurser.bildeHåndterer.hent(this.bane);
     if(bilde) {
         ctx.save();
         ctx.setTransform((this.reflekterX ? -1 : 1),0,0,1, this.x + (this.bredde/2), this.y + (this.høyde/2));

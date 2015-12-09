@@ -14,7 +14,7 @@
  */
 function lesFil(filBane, tilbakekall) {
     var xobj = new XMLHttpRequest();
-    xobj.open('GET', "../"+filBane, true);
+    xobj.open('GET', filBane, true);
     xobj.onreadystatechange = function() {
         if(xobj.readyState == 4 && xobj.status == "200"){
             tilbakekall(xobj.responseText);

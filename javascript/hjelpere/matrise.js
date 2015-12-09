@@ -9,6 +9,6 @@
 
 var Matrise = {
     identitet: function(){
-        return math.matrix([[1,0,0],[0,1,0],[0,0,1]]);
+        return math.diag([1,1,1]);
     }
 };

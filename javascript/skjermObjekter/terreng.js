@@ -11,7 +11,7 @@
 function Terreng(bane,nøkkelpunktKart){
     BildeObjekt.call(this,bane,0,0,600,400);
     this.nøkkelpunktKart = nøkkelpunktKart; // [[x,y,(høyde),type]]
-    this.farge = "black"; //TODO Midlertidig farge, må bli et bilde under en linje
+    this.farge = "black"; //TODO Midlertidig farge, må bli et bildeHåndterer under en linje
 }
 
 Terreng.prototype = Object.create(BildeObjekt.prototype);
