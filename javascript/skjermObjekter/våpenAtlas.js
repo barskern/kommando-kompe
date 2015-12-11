@@ -8,26 +8,27 @@
  */
 
 
-function Våpen(type,x,y,bredde,høyde){
-    BildeObjekt.call(this,type.bane,x,y,bredde,høyde);
+function VåpenAtlas(type,x,y,bredde,høyde){
+    BildeAtlasObjekt.call(this,type.atlas,type.navn,x,y,bredde,høyde);
     this.type = type;
 }
 
-Våpen.typer = (function(){
-    function Egenskaper(bane,lyd,relativeAnkerpunkt){
-        this.bane = bane;
+VåpenAtlas.typer = (function(){
+    function Egenskaper(atlas,navn,lyd,relativeAnkerpunkt){
+        this.atlas = atlas;
+        this.navn = navn;
         this.lyd = lyd;
         this.relativtAnkerpunkt = relativeAnkerpunkt;
     }
     return {
-        "MP5": new Egenskaper("mp5_1660x672.png",false,[(892/1660),(354/672)])
-    };
+        SPAS12: new Egenskaper(Atlas.typer.Challagundla4Weapons,"Spas - 12",false,[(892/1660),(354/672)])
+};
 })();
 
-Våpen.prototype = Object.create(BildeObjekt.prototype);
-Våpen.prototype.constructor = Våpen;
+VåpenAtlas.prototype = Object.create(BildeAtlasObjekt.prototype);
+VåpenAtlas.prototype.constructor = VåpenAtlas;
 
-Våpen.prototype.oppdater = function(eier){
+VåpenAtlas.prototype.oppdater = function(eier){
     if(eier){
         var eierAnkerX = Math.abs((eier.retningFartX < 0 ? 1 : 0) - eier.relativtVåpenAnkerpunkt[0]) * eier.bredde;
         var våpenAnkerY = Math.abs((eier.retningFartX < 0 ? 1 : 0) - this.type.relativtAnkerpunkt[0]) * this.bredde;
@@ -38,8 +39,8 @@ Våpen.prototype.oppdater = function(eier){
     this.reflekterX = (this.retningFartX < 0);
 };
 
-Våpen.prototype.hentType = function(type){
-    return Våpen.typer[type];
+VåpenAtlas.prototype.hentType = function(type){
+    return VåpenAtlas.typer[type];
 };
 
 

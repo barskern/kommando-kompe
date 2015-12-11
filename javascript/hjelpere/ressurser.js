@@ -11,7 +11,9 @@
  * Et enkelt verktøy for a laste bilder og lagre de i cache.
  */
 (function(){
-    var laster = {}, tilbakekall = [];
+    window.tilbakekall = { onresize: [] };
+
+    var laster = {}, nårFilerKlareTilbakekall = [];
 
     var bildeHåndterer = {
         /**
@@ -22,16 +24,15 @@
          * Hvert bilden som er et atlas kan hentes her med informasjon om atlaset. Håndterer atlasene.
          */
         atlas: {
-            XMLer: {},
-            last:function(bane){
-                var sisteIndeksPunktum = bane.lastIndexOf('.');
-                console.log();
-                filHåndterer.lastXML("bilder/atlas/"+bane.slice(0,bane.lastIndexOf('.')) + ".xml");
-                bildeHåndterer._last("atlas/"+bane);
+            last:function(navn){
+                filHåndterer._last("bilder/atlas/"+navn+".json", filHåndterer.JSONer);
+                bildeHåndterer._last("atlas/"+navn+".png");
             },
-            hent: function(bane, bildeNavn){
-                var XMLDoku = bildeHåndterer.atlas.XMLer[bane];
-                return XMLDoku.getElementsByTagName('Kart')[0].getElementById(bildeNavn);
+            hentJSON: function(navn){
+                return filHåndterer.hent("bilder/atlas/"+navn+".json", filHåndterer.JSONer);
+            },
+            hentBilde: function(navn){
+                return bildeHåndterer.hent("atlas/"+navn+".png");
             }
         },
         /**
@@ -58,12 +59,7 @@
             var bilde = new Image();
             bilde.onload = function(){
                 bildeHåndterer.lastet[bane] = bilde;
-
-                if(ressurserLastet()){
-                    tilbakekall.forEach(function(tk){
-                        tk();
-                    });
-                }
+                sjekkOmAlleLastet();
             };
             bildeHåndterer.lastet[bane] = false;
             bilde.src = "bilder/"+bane;
@@ -79,33 +75,75 @@
     };
 
     var filHåndterer = {
-        lastXML: function(bane){
-            console.log(bane);
+        filer: {},
+        XMLer: {},
+        JSONer: {},
+        _lastXML: function(bane){
             var xhttp = new XMLHttpRequest();
             xhttp.onreadystatechange = function(){
-                if(xhttp.readyState == 4){
-
+                if(xhttp.readyState === 4 && xhttp.status === 200) {
+                    filHåndterer.XMLer[bane] = xhttp.responseXML;
+                    sjekkOmAlleLastet();
                 }
             };
-
+            filHåndterer.XMLer[bane] = false;
+            xhttp.open('GET', bane, true);
+            xhttp.send();
         },
-        hentXML: function(){
-
+        _last: function(bane,lagringsobjekt){
+            lagringsobjekt = (!lagringsobjekt ? filHåndterer.filer : lagringsobjekt);
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function(){
+                if(xhttp.readyState === 4 && xhttp.status === 200){
+                    lagringsobjekt[bane] = xhttp.responseText;
+                    sjekkOmAlleLastet();
+                }
+            };
+            lagringsobjekt[bane] = false;
+            xhttp.open('GET', bane, true);
+            xhttp.send();
+        },
+        hent: function(bane,lagringsobjekt){
+            lagringsobjekt = (!lagringsobjekt ? filHåndterer.filer : lagringsobjekt);
+            return lagringsobjekt[bane];
         }
     };
+    function sjekkOmAlleLastet(){
+        if(ressurserLastet()) {
+            nårFilerKlareTilbakekall.forEach(function (tk) {
+                tk();
+            });
+        }
+    }
 
     /**
-     * Sjekker om alle bildene er lastet.
-     * @returns  true hvis alle bildene er lastet
+     * Sjekker om alle filene er lastet.
+     * @returns  true hvis alle filene er lastet
      */
     function ressurserLastet(){
         var klar = true;
-        for(var b in bildeHåndterer.lastet){
-            if(bildeHåndterer.lastet.hasOwnProperty(b) && !bildeHåndterer.lastet[b]){
-                klar = false;
-                break;
+        var lister = [bildeHåndterer.lastet, filHåndterer.XMLer];
+        var nøkkelLister = (function(){
+            var resultat = [], i = 0;
+            lister.forEach(function(liste){
+                if(liste){
+                    resultat[i] = Object.keys(liste);
+                    i++;
+                }
+            });
+            return resultat;
+        })();
+
+        for(var i = 0; i < nøkkelLister.length; i++){
+            for(var j = 0; j < nøkkelLister[i].length; j++){
+                if(!lister[i][nøkkelLister[i][j]]){
+                    klar = false;
+                    break;
+                }
             }
+
         }
+
         return klar;
     }
 
@@ -114,8 +152,8 @@
      * ferdig lastet.
      * @param tk en funksjon som blir kalt nar ressursene er lastet
      */
-    function nårRessurserKlare(tk){
-        tilbakekall.push(tk);
+    function nårRessurserKlareKall(tk){
+        nårFilerKlareTilbakekall.push(tk);
     }
 
     window.Ressurser = {
@@ -124,15 +162,15 @@
             hent: bildeHåndterer.hent,
             atlas: {
                 last: bildeHåndterer.atlas.last,
-                hent: bildeHåndterer.atlas.hent
+                hentJSON: bildeHåndterer.atlas.hentJSON,
+                hentBilde: bildeHåndterer.atlas.hentBilde
             }
         },
         filHåndterer: {
-            last: filHåndterer.lastXML,
-            hent: filHåndterer.hentXML
+            last: filHåndterer._last,
+            hent: filHåndterer.hent
         },
-        nårRessurserKlare: nårRessurserKlare,
+        nårKlareKall: nårRessurserKlareKall,
         ressurserLastet: ressurserLastet
     };
-
 })();

@@ -22,10 +22,19 @@ var motor = (function(){
                 this.delta = (this.nå - this.sisteTid) / 1000.0;
                 this.sisteTid = this.nå;
             }
-        };
+        },
+        tilbakekall = window.tilbakekall;
 
-    canvas.width = 600;
-    canvas.height = 400;
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    window.onresize = function(e){
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        tilbakekall.onresize.forEach(function(tk){
+            tk();
+        });
+    };
 
     function main(){
         klokke.oppdater();
@@ -37,11 +46,12 @@ var motor = (function(){
     function init(){
         doku.body.appendChild(canvas);
         klokke.sisteTid = Date.now();
+        spill.init();
         main();
     }
 
-    Ressurser.nårRessurserKlare(init);
+    Ressurser.nårKlareKall(init);
 
     window.ctx = ctx;
-    window.clock = klokke;
+    window.klokke = klokke;
 })();

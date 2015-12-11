@@ -9,12 +9,16 @@
 
 
 function Spill() {
-    this.terreng = new Terreng("landskapEksempel640x417.jpg",[[-Number.MAX_VALUE,400-60,1],[Number.MAX_VALUE,400-60,1]]);
+    this.terreng = new TerrengAtlas(Atlas.typer.spillerOgTerreng,"landskapEksempel640x417",
+        [[-Number.MAX_VALUE,400-60,1],[Number.MAX_VALUE,400-60,1]]);
     this.terreng.settSomNåværende();
-    this.spiller = new Spiller("KommandoKalleFigur.png",100,400-44,0,1.8*Spill.pikselPerMeter);
-    this.bao = new BildeArkObjekt("CommandoCompe.png",300,200,0,Spill.pikselPerMeter,0);
 
-    Ressurser.bildeHåndterer.atlas.last("Challagundla4Weapons.png");
+    this.spiller = new SpillerAtlas(Atlas.typer.spillerOgTerreng,"KommandoKalleFigur",2*Spill.pikselPerMeter,Spill.pikselPerMeter,0,1.8*Spill.pikselPerMeter,0);
+
+    this.init = function(){
+        this.terreng.init();
+    };
+
 
     this.oppdater = function(){
         this.terreng.oppdater();
@@ -27,10 +31,11 @@ function Spill() {
         this.terreng.tegn();
         this.spiller.tegn();
 
-        BildeArkObjekt.tegnHjelpeLinje(0,200,600,200);
-        BildeArkObjekt.tegnHjelpeLinje(300,0,300,400);
+        /*for(var i = 1; i < Math.max(ctx.canvas.width,ctx.canvas.height)/Spill.pikselPerMeter; i++){
+            BildeAtlasObjekt.tegnHjelpeLinje(i*Spill.pikselPerMeter,0,i*Spill.pikselPerMeter,ctx.canvas.height);
+            BildeAtlasObjekt.tegnHjelpeLinje(0,i*Spill.pikselPerMeter,ctx.canvas.width,i*Spill.pikselPerMeter);
+        }*/
 
-        this.bao.tegn();
     };
 }
 

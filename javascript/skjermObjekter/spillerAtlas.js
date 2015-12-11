@@ -8,11 +8,11 @@
  */
 
 
-function Spiller(bane,x,y,bredde,høyde){
-    Enhet.call(this,bane,x,y,bredde,høyde);
+function SpillerAtlas(atlas,bildeNavn,x,y,bredde,høyde){
+    EnhetAtlas.call(this,atlas,bildeNavn,x,y,bredde,høyde);
 
-    this.hastighetX = 15;
-    this.hastighetY = 5;
+    this.hastighetX = Spill.pikselPerMeter/7.33;
+    this.hastighetY = Spill.pikselPerMeter/22;
 
     this.inngangsdata = new Inngangsdata();
     this.inngangsdata.leggTilTrykkeEvent('keydown',68,this.settAkselerasjon.bind(this,1,this.hastighetX));    //Høyre D
@@ -20,21 +20,19 @@ function Spiller(bane,x,y,bredde,høyde){
     this.inngangsdata.leggTilTrykkeEvent('keydown',32,this.hopp.bind(this,this.hastighetY));       //Hopp Mellomrom
 }
 
-Spiller.prototype = Object.create(Enhet.prototype);
-Spiller.prototype.constructor = Spiller;
+SpillerAtlas.prototype = Object.create(EnhetAtlas.prototype);
+SpillerAtlas.prototype.constructor = SpillerAtlas;
 
-Spiller.prototype.oppdater = function(){
+SpillerAtlas.prototype.oppdater = function(){
     this.inngangsdata.oppdater();
 
     if(this.x < 60){
-        Terreng.nåværende.x -= this.fartX * clock.delta;
+        TerrengAtlas.nåværende.x -= this.fartX * klokke.delta;
         this.x = 60;
     }
     if(this.x > ctx.canvas.width - 60 - this.bredde){
-        Terreng.nåværende.x -= this.fartX * clock.delta;
+        TerrengAtlas.nåværende.x -= this.fartX * klokke.delta;
         this.x = ctx.canvas.width - 60 - this.bredde;
     }
-    Enhet.prototype.oppdater.call(this);
+    EnhetAtlas.prototype.oppdater.call(this);
 };
-
-

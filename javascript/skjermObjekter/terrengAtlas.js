@@ -8,44 +8,55 @@
  */
 
 
-function Terreng(bane,nøkkelpunktKart){
-    BildeObjekt.call(this,bane,0,0,600,400);
+function TerrengAtlas(atlas,bildeNavn, nøkkelpunktKart){
+    BildeAtlasObjekt.call(this,atlas,bildeNavn,0,0,0,0);
     this.nøkkelpunktKart = nøkkelpunktKart; // [[x,y,(høyde),type]]
-    this.farge = "black"; //TODO Midlertidig farge, må bli et bildeHåndterer under en linje
+    this.farge = "black";
+
+    var gjørKlar = function(){
+        this.settBreddeHøydeMedMinimum(this.bildeNavn,1,ctx.canvas.height);
+    };
+    Ressurser.nårKlareKall(gjørKlar.bind(this));
 }
 
-Terreng.prototype = Object.create(BildeObjekt.prototype);
-Terreng.prototype.constructor = Terreng;
+TerrengAtlas.prototype = Object.create(BildeAtlasObjekt.prototype);
+TerrengAtlas.prototype.constructor = TerrengAtlas;
 
 //Statiske medlemmer av klassen
 
-Terreng.nåværende = null;
+TerrengAtlas.nåværende = null;
 
-Terreng.typer = (function(){
+TerrengAtlas.typer = (function(){
 
-    function Egenskap(bane){
-        this.bane = bane;
+    function Egenskap(atlas,bildeNavn){
+        this.atlas = atlas;
+        this.bildeNavn = bildeNavn;
     }
 
     return {
-        1: "GRESS",
-        2: "JORD",
-        egenskaper: {
-            "GRESS": new Egenskap("CommandoCompe.png"),
-            "JORD": new Egenskap("CommandoCompe.png")
-        }
+        GRESS: new Egenskap(Atlas.typer.spillerOgTerreng,"gress"),
+        JORD: new Egenskap(Atlas.typer.spillerOgTerreng,"jord")
     };
 })();
 
 
 //Medlemsfunksjoner
 
-Terreng.prototype.settSomNåværende = function(){
-    Terreng.nåværende = this;
+TerrengAtlas.prototype.settSomNåværende = function(){
+    TerrengAtlas.nåværende = this;
 };
 
-Terreng.prototype.oppdater = function(){
-    BildeObjekt.prototype.oppdater.call(this);
+
+TerrengAtlas.prototype.init = function(){
+    tilbakekall.onresize.push(this.settBreddeHøydeMedMinimum.bind(this,this.bildeNavn,1,ctx.canvas.height));
+    this.nøkkelpunktKart = [
+        [-Number.MAX_VALUE,0.85*ctx.canvas.height,TerrengAtlas.typer.GRESS],
+        [Number.MAX_VALUE,0.85*ctx.canvas.height,TerrengAtlas.typer.GRESS]
+    ];
+};
+
+TerrengAtlas.prototype.oppdater = function(){
+
     if(this.x < -2 * this.bredde){
         this.x = 0;
     }
@@ -54,28 +65,28 @@ Terreng.prototype.oppdater = function(){
     }
 };
 
-Terreng.prototype.tegn = function(){
+TerrengAtlas.prototype.tegn = function(){
     //console.log("første: x = "+this.x+" | y ="+this.y+" | b = "+this.bredde+" | h = "+this.høyde);
-    BildeObjekt.prototype.tegn.call(this);
+    BildeAtlasObjekt.prototype.tegn.call(this);
     var midlertidigX = this.x;
-    this.x += this.bredde;
+    this.x += this.bredde - 2;
     this.reflekterX = true;
     //console.log("andre: x = "+this.x+" | y ="+this.y+" | b = "+this.bredde+" | h = "+this.høyde);
-    BildeObjekt.prototype.tegn.call(this);
+    BildeAtlasObjekt.prototype.tegn.call(this);
     this.reflekterX = false;
-    this.x += this.bredde;
+    this.x += this.bredde - 2;
     //console.log("tredje: x = "+this.x+" | y ="+this.y+" | b = "+this.bredde+" | h = "+this.høyde);
-    BildeObjekt.prototype.tegn.call(this);
-    this.x += this.bredde;
+    BildeAtlasObjekt.prototype.tegn.call(this);
+    this.x += this.bredde - 2;
     this.reflekterX = true;
     //console.log("fjerde: x = "+this.x+" | y ="+this.y+" | b = "+this.bredde+" | h = "+this.høyde);
-    BildeObjekt.prototype.tegn.call(this);
+    BildeAtlasObjekt.prototype.tegn.call(this);
     this.reflekterX = false;
     this.x = midlertidigX;
 };
 
 
-Terreng.prototype.tegnLineær = function(){
+TerrengAtlas.prototype.tegnLineær = function(){
     ctx.beginPath();
     for(var i = 0; i < this.nøkkelpunktKart.length; i++) {
         var nåværende = this.nøkkelpunktKart[i];
@@ -90,7 +101,7 @@ Terreng.prototype.tegnLineær = function(){
     ctx.fill();
 };
 
-Terreng.prototype.tegnSomKurve = function(){
+TerrengAtlas.prototype.tegnSomKurve = function(){
     ctx.beginPath();
     for(var i = 0; i < this.nøkkelpunktKart.length; i++){
         var nåværende = this.nøkkelpunktKart[i];
@@ -108,7 +119,7 @@ Terreng.prototype.tegnSomKurve = function(){
     ctx.stroke();
 };
 
-Terreng.prototype.hentLineærY = function(påX){
+TerrengAtlas.prototype.hentLineærY = function(påX){
     var nåværende, neste, stigningstallet = 0, deltaX, deltaY;
 
     for(var i = 0; i < this.nøkkelpunktKart.length; i++){
@@ -133,9 +144,9 @@ Terreng.prototype.hentLineærY = function(påX){
     return (stigningstallet * (påX - ((nåværende && nåværende[0]) || 0))) + ((nåværende && nåværende[1]) || Number.MAX_VALUE);
 };
 
-Terreng.prototype.hentType = function(id){
+TerrengAtlas.prototype.hentType = function(id){
     console.log("id = "+id);
-    return Terreng.typer[id];
+    return TerrengAtlas.typer[id];
 };
 
 
