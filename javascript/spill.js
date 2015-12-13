@@ -9,11 +9,10 @@
 
 
 function Spill() {
-    this.terreng = new TerrengAtlas(Atlas.typer.spillerOgTerreng,"landskapEksempel640x417",
-        [[-Number.MAX_VALUE,400-60,1],[Number.MAX_VALUE,400-60,1]]);
+    this.terreng = new Terreng(Terreng.typer.SKOGLAND);
     this.terreng.settSomNåværende();
 
-    this.spiller = new SpillerAtlas(Atlas.typer.spillerOgTerreng,"KommandoKalleFigur",2*Spill.pikselPerMeter,Spill.pikselPerMeter,0,1.8*Spill.pikselPerMeter,0);
+    this.spiller = new Spiller(Atlas.typer.spillerOgTerreng,"KommandoKalleFigur",2*config.pikselPerMeter,config.pikselPerMeter,0,1.8*config.pikselPerMeter,0);
 
     this.init = function(){
         this.terreng.init();
@@ -31,12 +30,10 @@ function Spill() {
         this.terreng.tegn();
         this.spiller.tegn();
 
-        /*for(var i = 1; i < Math.max(ctx.canvas.width,ctx.canvas.height)/Spill.pikselPerMeter; i++){
-            BildeAtlasObjekt.tegnHjelpeLinje(i*Spill.pikselPerMeter,0,i*Spill.pikselPerMeter,ctx.canvas.height);
-            BildeAtlasObjekt.tegnHjelpeLinje(0,i*Spill.pikselPerMeter,ctx.canvas.width,i*Spill.pikselPerMeter);
-        }*/
+        for(var i = 1; i < Math.max(ctx.canvas.width,ctx.canvas.height)/config.pikselPerMeter; i++){
+            BildeAtlasObjekt.tegnHjelpeLinje(i*config.pikselPerMeter,0,i*config.pikselPerMeter,ctx.canvas.height);
+            BildeAtlasObjekt.tegnHjelpeLinje(0,i*config.pikselPerMeter,ctx.canvas.width,i*config.pikselPerMeter);
+        }
 
     };
 }
-
-Spill.pikselPerMeter = 110;

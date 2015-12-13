@@ -8,29 +8,32 @@
  */
 
 
-function EnhetAtlas(atlas,bildeNavn,x,y,bredde,høyde){
+function Enhet(atlas,bildeNavn,x,y,bredde,høyde){
     BildeAtlasObjekt.call(this,atlas,bildeNavn,x,y,bredde,høyde);
 
     this.fartX = 0;
     this.akselerasjonX = 0;
-    this.fartsgrenseX = 4 * Spill.pikselPerMeter;
-    this.deakselerasjonX = 10 * Spill.pikselPerMeter;
+    this.fartsgrenseX = 4 * config.pikselPerMeter;
+    this.deakselerasjonX = 10 * config.pikselPerMeter;
     this.retningFartX = 1;
 
     this.fartY = 0;
+
+    this.våpen = undefined;
+    this.relativtVåpenAnkerpunkt = [0,0];
 }
 
-EnhetAtlas.prototype = Object.create(BildeAtlasObjekt.prototype);
-EnhetAtlas.prototype.constructor = EnhetAtlas;
+Enhet.prototype = Object.create(BildeAtlasObjekt.prototype);
+Enhet.prototype.constructor = Enhet;
 
-EnhetAtlas.gravitasjon = 9.81; // m/s^2
+Enhet.gravitasjon = 9.81; // m/s^2
 
 
 //Medlemsfunksjoner
 
-EnhetAtlas.prototype.settAkselerasjon = function(retning, mengde){
+Enhet.prototype.settAkselerasjon = function(retning, mengde){
     if((this.fartX > -this.fartsgrenseX || retning === 1) && (this.fartX < this.fartsgrenseX || retning === -1))
-        this.akselerasjonX = (retning * mengde) * Spill.pikselPerMeter;
+        this.akselerasjonX = (retning * mengde) * config.pikselPerMeter;
     else {
         this.akselerasjonX = 0;
         this.fartX = this.retningFartX * this.fartsgrenseX;
@@ -39,23 +42,34 @@ EnhetAtlas.prototype.settAkselerasjon = function(retning, mengde){
         this.akselerasjonX += (this.akselerasjonX/Math.abs(this.akselerasjonX)) * this.deakselerasjonX;
 };
 
-EnhetAtlas.prototype.hopp = function(mengde){
+Enhet.prototype.hopp = function(mengde){
     if(this.y + this.høyde + 5 > this.terrengHøyde && this.y + this.høyde - 5 < this.terrengHøyde)
-        this.fartY = mengde * Spill.pikselPerMeter;
+        this.fartY = mengde * config.pikselPerMeter;
 };
 
-EnhetAtlas.prototype.oppdater = function(){
+Enhet.prototype.skyt = function(){
+    if(this.våpen)
+        this.våpen.skyt();
+};
+
+
+Enhet.prototype.oppdater = function(){
     this.reflekterX = (this.retningFartX < 0);
     this.oppdaterX();
-    this.terrengHøyde = TerrengAtlas.nåværende.hentLineærY(this.x + (this.bredde/2));
+    this.terrengHøyde = Terreng.nåværende.hentLineærY(this.x + (this.bredde/2));
     this.oppdaterY();
+    if(this.våpen)
+        this.våpen.oppdater(this);
 };
 
-EnhetAtlas.prototype.tegn = function(){
+Enhet.prototype.tegn = function(){
     BildeAtlasObjekt.prototype.tegn.call(this);
+    if(this.våpen)
+        this.våpen.tegn();
 };
 
-EnhetAtlas.prototype.oppdaterX = function(){
+
+Enhet.prototype.oppdaterX = function(){
     this.fartX += this.akselerasjonX * klokke.delta;
     if(this.fartX * this.akselerasjonX < 0
         && -(this.deakselerasjonX * klokke.delta) < this.fartX
@@ -66,12 +80,12 @@ EnhetAtlas.prototype.oppdaterX = function(){
     this.retningFartX = (this.fartX != 0 && this.fartX/Math.abs(this.fartX)) || this.retningFartX;
 };
 
-EnhetAtlas.prototype.oppdaterY = function(){
+Enhet.prototype.oppdaterY = function(){
     this.y -= this.fartY * klokke.delta;
     if(this.y + this.høyde > this.terrengHøyde)
         this.y = this.terrengHøyde - this.høyde;
     if(this.y + this.høyde !== this.terrengHøyde)
-        this.fartY -= Spill.pikselPerMeter * EnhetAtlas.gravitasjon * klokke.delta;
+        this.fartY -= config.pikselPerMeter * Enhet.gravitasjon * klokke.delta;
     else
         this.fartY = 0
 };

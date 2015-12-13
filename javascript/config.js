@@ -7,20 +7,6 @@
  *
  */
 
-var Atlas = {};
-
-Atlas.typer = (function(){
-    function Egenskap(navn){
-        Ressurser.bildeHåndterer.atlas.last(navn);
-        this.navn = navn;
-        this.data = false;
-
-        Ressurser.nårKlareKall(function(){
-            this.data = JSON.parse(Ressurser.bildeHåndterer.atlas.hentJSON(this.navn));
-        }.bind(this));
-    }
-    return {
-        Challagundla4Weapons: new Egenskap("Challagundla4Weapons"),
-        spillerOgTerreng: new Egenskap("spillerOgTerreng")
-    };
-})();
+var config = {
+    pikselPerMeter: 110
+};
