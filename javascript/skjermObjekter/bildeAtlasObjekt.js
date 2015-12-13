@@ -19,10 +19,13 @@ function BildeAtlasObjekt(atlas,bildeNavn,x,y,bredde,høyde){
     this.reflekterY = false;
 
     this.lag = [];
-    this.atlasBildeLag(0, false, bildeNavn);
+
 
     if(this.høyde === 0 || this.bredde === 0){
-        Ressurser.nårKlareKall(this.settBreddeHøyde.bind(this,this.bildeNavn));
+        Ressurser.nårKlareKall(function(){
+            this.settBreddeHøyde(this.bildeNavn);
+            this.atlasBildeLag(0, false, bildeNavn);
+        }.bind(this));
     }
 }
 
@@ -53,7 +56,8 @@ BildeAtlasObjekt.tegnGradient = function(x1,y1,x2,y2,x,y,bredde,høyde,farge1,fa
 BildeAtlasObjekt.prototype.initLag = function(indeks, slettTidligere){
     var lagObjekt = {
         atlas: this.atlas, bildeNavn: undefined,
-        rotasjon: 0, skalering: {x: 1, y: 1}, forflyttning: {x: 0, y: 0},
+        rotasjon: 0, relativX: 0, relativY: 0,
+        bredde: this.bredde, høyde: this.høyde,
         reflekter: {x: false, y: false}, vis: true
     };
     if(!this.lag[indeks]) {
@@ -92,19 +96,25 @@ BildeAtlasObjekt.prototype.roterLag = function(indeks, mengde){
 
 BildeAtlasObjekt.prototype.skalerLag = function(indeks, xMengde, yMengde, nySkalering){
     nySkalering = (nySkalering === 'undefined');
-    var skalering = this.lag[indeks].skalering;
+    var lag = this.lag[indeks];
     if(nySkalering){
-        skalering.x = 1;
-        skalering.y = 1;
+        lag.bredde = this.bredde * xMengde;
+        lag.høyde = this.høyde * xMengde;
     }
-    skalering.x *= xMengde;
-    skalering.y *= yMengde;
+    lag.bredde *= xMengde;
+    lag.høyde *= yMengde;
 };
 
 BildeAtlasObjekt.prototype.transformerLag = function(indeks, xMengde, yMengde){
-    var lagForflyttning = this.lag[indeks].forflyttning;
-    lagForflyttning.x += xMengde;
-    lagForflyttning.y += yMengde;
+    var lag = this.lag[indeks];
+    lag.relativX += xMengde;
+    lag.relativY += yMengde;
+};
+
+BildeAtlasObjekt.prototype.størrelseLag = function(indeks, bredde, høyde){
+    var lag = this.lag[indeks];
+    lag.bredde = bredde;
+    lag.høyde = høyde;
 };
 
 BildeAtlasObjekt.prototype.tegnLag = function(lag){
@@ -112,10 +122,10 @@ BildeAtlasObjekt.prototype.tegnLag = function(lag){
     var bildeData = atlas.data[lag.bildeNavn];
     var atlasBilde = Ressurser.bildeHåndterer.atlas.hentBilde(atlas.navn);
     if(bildeData && atlasBilde && lag.vis){
-        var lagBredde = this.bredde * lag.skalering.x;
-        var lagHøyde = this.høyde * lag.skalering.y;
+        var lagBredde = lag.bredde;
+        var lagHøyde = lag.høyde;
         ctx.save();
-        ctx.translate(lag.forflyttning.x - (this.bredde/2) + lagBredde/2, lag.forflyttning.y - (this.høyde/2) + lagHøyde/2);
+        ctx.translate(lag.relativX - (this.bredde/2) + lagBredde/2, lag.relativY - (this.høyde/2) + lagHøyde/2);
         ctx.rotate(lag.rotasjon * (Math.PI/180));
         ctx.scale((lag.reflekter.x ? -1 : 1),(lag.reflekter.y ? -1 : 1));
         ctx.drawImage(atlasBilde,
