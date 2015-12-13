@@ -13,13 +13,14 @@ function Våpen(type,x,y,bredde,høyde){
     this.skudd = [];
     this.tidSidenSisteSkudd = Number.MAX_VALUE/2;
 
-    var nårKlar = function(){
+    Ressurser.nårKlareKall(function(){
         this.atlasBildeLag(1,Atlas.typer.effekter,"geværløpflamme");
+        var lagHøyde = config.pikselPerMeter * 0.15;
+        var lagBredde = config.pikselPerMeter * 0.4;
         this.settSynlighetLag(1,false);
-        this.transformerLag(1,this.bredde*this.type.relativtGeværløp[0],this.høyde*this.type.relativtGeværløp[1]-(this.høyde/2));
-    }.bind(this);
-
-    Ressurser.nårKlareKall(nårKlar);
+        this.størrelseLag(1,lagBredde, lagHøyde);
+        this.transformerLag(1,this.bredde * this.type.relativtGeværløp[0], this.høyde * this.type.relativtGeværløp[1] - (lagHøyde/2));
+    }.bind(this));
 }
 
 Våpen.prototype = Object.create(BildeAtlasObjekt.prototype);
