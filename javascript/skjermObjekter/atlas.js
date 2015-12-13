@@ -19,8 +19,16 @@ Atlas.typer = (function(){
             this.data = JSON.parse(Ressurser.bildeHåndterer.atlas.hentJSON(this.navn));
         }.bind(this));
     }
+    Egenskap.prototype.hentJSON = function(){
+        return JSON.parse(Ressurser.bildeHåndterer.atlas.hentJSON(this.navn));
+    };
+    Egenskap.prototype.hentBilde = function(){
+        return Ressurser.bildeHåndterer.atlas.hentBilde(this.navn);
+    };
     return {
         Challagundla4Weapons: new Egenskap("Challagundla4Weapons"),
-        spillerOgTerreng: new Egenskap("spillerOgTerreng")
+        spillerOgTerreng: new Egenskap("spillerOgTerreng"),
+        effekter: new Egenskap("effekter")
     };
 })();
+

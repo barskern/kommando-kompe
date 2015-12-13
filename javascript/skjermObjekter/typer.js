@@ -46,6 +46,6 @@ Våpen.typer = (function(){
     }
     return {
         SPAS12: new Egenskaper(Atlas.typer.Challagundla4Weapons,"Spas - 12",false,[(892/1660),(354/672)],[0,0],30,Prosjektil.typer.VANLIG),
-        M97Rifle: new Egenskaper(Atlas.typer.Challagundla4Weapons,"M97 Rifle",false,[0.33,0.5],[0,0],200,Prosjektil.typer.VANLIG)
+        M97Rifle: new Egenskaper(Atlas.typer.Challagundla4Weapons,"M97 Rifle",false,[0.33,0.5],[0.9,0.22],200,Prosjektil.typer.VANLIG)
     };
 })();

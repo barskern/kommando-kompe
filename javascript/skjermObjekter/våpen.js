@@ -12,6 +12,14 @@ function Våpen(type,x,y,bredde,høyde){
     this.type = type;
     this.skudd = [];
     this.tidSidenSisteSkudd = Number.MAX_VALUE/2;
+
+    var nårKlar = function(){
+        this.atlasBildeLag(1,Atlas.typer.effekter,"geværløpflamme");
+        this.settSynlighetLag(1,false);
+        this.transformerLag(1,this.bredde*this.type.relativtGeværløp[0],this.høyde*this.type.relativtGeværløp[1]-(this.høyde/2));
+    }.bind(this);
+
+    Ressurser.nårKlareKall(nårKlar);
 }
 
 Våpen.prototype = Object.create(BildeAtlasObjekt.prototype);
@@ -21,16 +29,19 @@ Våpen.prototype.constructor = Våpen;
 Våpen.prototype.skyt = function(){
     if(this.tidSidenSisteSkudd > (1/this.type.skuddPerSekund)){
         this.skudd.push(new Prosjektil(
-            this.x+(this.bredde*this.type.relativtGeværløp[0]),
+            this.x+((this.reflekterX ? -1 : 1)*this.bredde*this.type.relativtGeværløp[0]),
             this.y+(this.høyde*this.type.relativtGeværløp[1]),
             this.type.prosjektilType,!this.reflekterX
         ));
         this.tidSidenSisteSkudd = 0;
+        this.settSynlighetLag(1,true);
     }
 };
 
 Våpen.prototype.oppdater = function(eier){
     this.tidSidenSisteSkudd += klokke.delta;
+    if(this.tidSidenSisteSkudd > 0.08) this.settSynlighetLag(1,false);
+
     if(eier){
         var eierAnkerX = Math.abs((eier.reflekterX ? 1 : 0) - eier.relativtVåpenAnkerpunkt[0]) * eier.bredde;
         var våpenAnkerX = Math.abs((eier.reflekterX ? 1 : 0) - this.type.relativtAnkerpunkt[0]) * this.bredde;
@@ -76,6 +87,7 @@ Prosjektil.prototype.tegn = function(){
     ctx.save();
     ctx.fillStyle = this.type.farge;
     ctx.translate(this.x, this.y);
+    ctx.beginPath();
     ctx.moveTo(0,0);
     ctx.lineTo(this.type.bredde,0);
     ctx.lineTo(this.type.bredde,this.type.høyde);

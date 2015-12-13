@@ -51,15 +51,23 @@ BildeAtlasObjekt.tegnGradient = function(x1,y1,x2,y2,x,y,bredde,høyde,farge1,fa
 
 
 BildeAtlasObjekt.prototype.initLag = function(indeks, slettTidligere){
+    var lagObjekt = {
+        atlas: this.atlas, bildeNavn: undefined,
+        rotasjon: 0, skalering: {x: 1, y: 1}, forflyttning: {x: 0, y: 0},
+        reflekter: {x: false, y: false}, vis: true
+    };
     if(!this.lag[indeks]) {
-        this.lag.splice(indeks, (slettTidligere ? 1 : 0),
-            {
-                atlas: this.atlas, bildeNavn: undefined,
-                rotasjon: 0, skalering: {x: 1, y: 1}, forflyttning: {x: 0, y: 0},
-                reflekter: {x: false, y: false}
-            }
-        );
+        this.lag.splice(indeks,0,lagObjekt);
+    } else {
+        if(slettTidligere){
+           this.lag.splice(indeks,1,lagObjekt);
+        }
     }
+};
+
+BildeAtlasObjekt.prototype.settSynlighetLag = function(indeks,synlighet){
+    var lag = this.lag[indeks];
+    if(lag) lag.vis = synlighet;
 };
 
 BildeAtlasObjekt.prototype.atlasBildeLag = function(indeks, atlas, bildeNavn){
@@ -100,9 +108,10 @@ BildeAtlasObjekt.prototype.transformerLag = function(indeks, xMengde, yMengde){
 };
 
 BildeAtlasObjekt.prototype.tegnLag = function(lag){
-    var bildeInfo = this.atlas.data[lag.bildeNavn];
-    var atlasBilde = Ressurser.bildeHåndterer.atlas.hentBilde(this.atlas.navn);
-    if(bildeInfo && atlasBilde){
+    var atlas = (lag.atlas || this.atlas);
+    var bildeData = atlas.data[lag.bildeNavn];
+    var atlasBilde = Ressurser.bildeHåndterer.atlas.hentBilde(atlas.navn);
+    if(bildeData && atlasBilde && lag.vis){
         var lagBredde = this.bredde * lag.skalering.x;
         var lagHøyde = this.høyde * lag.skalering.y;
         ctx.save();
@@ -110,11 +119,12 @@ BildeAtlasObjekt.prototype.tegnLag = function(lag){
         ctx.rotate(lag.rotasjon * (Math.PI/180));
         ctx.scale((lag.reflekter.x ? -1 : 1),(lag.reflekter.y ? -1 : 1));
         ctx.drawImage(atlasBilde,
-            bildeInfo.x, bildeInfo.y, bildeInfo.bredde, bildeInfo.høyde,
+            bildeData.x, bildeData.y, bildeData.bredde, bildeData.høyde,
             (-lagBredde/2), (-lagHøyde/2), lagBredde, lagHøyde);
         ctx.restore();
     }
 };
+
 
 BildeAtlasObjekt.prototype.tegn = function(){
     ctx.save();
