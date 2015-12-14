@@ -12,8 +12,9 @@ function Terreng(type){
     Ressurser.nårKlareKall(function(){
         this.settBreddeHøydeMedMinimum(this.bildeNavn,1,ctx.canvas.height);
     }.bind(this));
-
     BildeAtlasObjekt.call(this,type.atlas,type.bildeNavn,0,0,0,0);
+    this.globalX = this.x;
+    this.globalY = this.y;
     this.type = type;
     this.farge = "black";
 }
@@ -24,8 +25,6 @@ Terreng.prototype.constructor = Terreng;
 //Statiske medlemmer av klassen
 
 Terreng.nåværende = null;
-
-
 
 
 //Medlemsfunksjoner
@@ -40,12 +39,8 @@ Terreng.prototype.init = function(){
 };
 
 Terreng.prototype.oppdater = function(){
-    if(this.x < -2 * this.bredde){
-        this.x = 0;
-    }
-    if(this.x > 0) {
-        this.x = -2 * this.bredde;
-    }
+    var gangerRepetert = Math.floor((this.globalX)/(2*this.bredde));
+    this.x = (2*this.bredde*gangerRepetert) - (this.globalX);
 };
 
 Terreng.prototype.tegn = function(){

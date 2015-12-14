@@ -28,7 +28,8 @@ Atlas.typer = (function(){
     return {
         Challagundla4Weapons: new Egenskap("Challagundla4Weapons"),
         spillerOgTerreng: new Egenskap("spillerOgTerreng"),
-        effekter: new Egenskap("effekter")
+        effekter: new Egenskap("effekter"),
+        enheter: new Egenskap("enheter")
     };
 })();
 

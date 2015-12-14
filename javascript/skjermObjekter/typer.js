@@ -8,34 +8,47 @@
  */
 
 Terreng.typer = (function(){
-    function Egenskap(atlas,bildeNavn,initNøkkelpunktKart){
+    function Egenskaper(atlas,bildeNavn,initNøkkelpunktKart){
         this.atlas = atlas;
         this.bildeNavn = bildeNavn;
         this.initNøkkelpunktKart = initNøkkelpunktKart;
         this.nøkkelpunktKart = undefined;
     }
     return {
-        SKOGLAND: new Egenskap(Atlas.typer.spillerOgTerreng,"landskapEksempel640x417",function(){
-                return [[-Number.MAX_VALUE, 0.85 * ctx.canvas.height, Terreng.typer.GRESS], [Number.MAX_VALUE, 0.85 * ctx.canvas.height, Terreng.typer.GRESS]];
+        SKOGLAND: new Egenskaper(Atlas.typer.spillerOgTerreng,"landskapEksempel640x417",function(){
+                return [[-Number.MAX_VALUE, 0.85 * ctx.canvas.height, 1], [Number.MAX_VALUE, 0.85 * ctx.canvas.height, 1]];
             }
         )
     };
 })();
 
+Effekt.typer = (function(){
+    function Egenskaper(atlas,bildeNavn,varighet){
+        this.atlas = atlas;
+        this.bildeNavn = bildeNavn;
+        this.varighet = varighet;
+    }
+    return {
+        GEVÆRLØPBLINK: new Egenskaper(Atlas.typer.effekter,"geværløpflamme",0.08)
+    }
+})();
+
 Prosjektil.typer = (function(){
-    function Egenskaper(bredde,høyde,meterPerSekund,farge){
+    function Egenskaper(bredde,høyde,meterPerSekund,skade,farge){
         this.bredde = bredde;
         this.høyde = høyde;
         this.meterPerSekund = meterPerSekund;
         this.farge = farge;
+        this.skade = skade;
     }
     return {
-        VANLIG: new Egenskaper(config.pikselPerMeter,config.pikselPerMeter*0.02,12,"yellow")
+        VANLIG: new Egenskaper(config.pikselPerMeter,config.pikselPerMeter*0.02,12,20,"red"),
+        STORKULE: new Egenskaper(config.pikselPerMeter*0.2,config.pikselPerMeter*0.2,10,10,"yellow")
     };
 })();
 
 Våpen.typer = (function(){
-    function Egenskaper(atlas,navn,lyd,relativeAnkerpunkt,relativtGeværløp,skuddPerMinutt,prosjektilType){
+    function Egenskaper(atlas,navn,lyd,relativeAnkerpunkt,relativtGeværløp,skuddPerMinutt,prosjektilType,effekt){
         this.atlas = atlas;
         this.navn = navn;
         this.lyd = lyd;
@@ -43,9 +56,30 @@ Våpen.typer = (function(){
         this.relativtGeværløp = relativtGeværløp;
         this.skuddPerSekund = skuddPerMinutt / 60;
         this.prosjektilType = prosjektilType;
+        this.effekt = effekt;
     }
     return {
+        ROBOTBRYSTKANON: new Egenskaper(false,false,false,[0,0],[0,0],40,Prosjektil.typer.STORKULE),
         SPAS12: new Egenskaper(Atlas.typer.Challagundla4Weapons,"Spas - 12",false,[(892/1660),(354/672)],[0,0],30,Prosjektil.typer.VANLIG),
-        M97Rifle: new Egenskaper(Atlas.typer.Challagundla4Weapons,"M97 Rifle",false,[0.33,0.5],[0.9,0.22],200,Prosjektil.typer.VANLIG)
+        M97Rifle: new Egenskaper(Atlas.typer.Challagundla4Weapons,"M97 Rifle",false,[0.33,0.5],[0.9,0.22],500,Prosjektil.typer.VANLIG)
+    };
+})();
+
+Fiende.typer = (function(){
+    function Egenskaper(atlas,bildeNavn,bredde,høyde,våpenType,relativtVåpenAnkerpunkt,akselerasjonX,akselerasjonY,poengForDrap){
+        this.atlas = atlas;
+        this.bildeNavn = bildeNavn;
+        this.bredde = bredde;
+        this.høyde = høyde;
+        this.våpenType = våpenType;
+        this.relativtVåpenAnkerpunkt = relativtVåpenAnkerpunkt;
+        this.nåværendeAkselerasjonX = akselerasjonX;
+        this.akselerasjonY = akselerasjonY;
+        this.poengForDrap = poengForDrap;
+    }
+    return {
+        ROBOT: new Egenskaper(Atlas.typer.enheter,"fiendeRobot",0,2*config.pikselPerMeter,
+            Våpen.typer.ROBOTBRYSTKANON,[0.6,0.2],
+            config.pikselPerMeter/80,config.pikselPerMeter/100,100)
     };
 })();
