@@ -18,7 +18,7 @@ function Hovedmeny(){
 }
 
 Hovedmeny.prototype.init = function(){
-    this.spillKnapp.mønster = Mønster.typer["metalLiten"].mønster;
+    this.spillKnapp.mønster = Mønster.typer["metallVeldigLiten"].mønster;
     this.spillKnapp.tekst.fillStyle = "black";
     this.spillKnapp.tekst.font = "Stencil";
     this.spillKnapp.tekst.fontSize = 50;
