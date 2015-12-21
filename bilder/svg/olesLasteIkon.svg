@@ -1,0 +1,100 @@
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" viewBox="0 0 250 250">
+	<defs>
+		<style>
+			#loading_ani_g {
+				fill: gray;
+			}
+		</style>
+	</defs>
+    <g id="loading_ani_g">
+			<path d="M24.499,68.946c0,34.833,0,69.667,0,104.5c0,9.686,15.003,9.771,15.003,0.107c0-34.833,0-69.667,0-104.5
+	                 C39.501,59.368,24.499,59.282,24.499,68.946L24.499,68.946z">
+					 <animateTransform
+					 attributeName="transform"
+					 attributeType="XML"
+					 type="translate"
+					 dur="1s"
+					 values="0,15;0,-15;0,15;"
+					 repeatCount="indefinite"
+					 />
+			</path>
+	       <path d="M85.499,68.946c0,34.833,0,69.667,0,104.5c0,9.686,15.003,9.771,15.003,0.107c0-34.833,0-69.667,0-104.5
+	                C100.501,59.368,85.499,59.282,85.499,68.946L85.499,68.946z">
+
+					 <animateTransform
+					 attributeName="transform"
+					 attributeType="XML"
+					 type="translate"
+					 begin="-0.2s"
+					 dur="1s"
+					 values="0,15;0,-15;0,15;"
+					 repeatCount="indefinite"
+					 />
+			</path>
+	       <path d="M54.999,68.946c0,34.833,0,69.667,0,104.5c0,9.686,15.003,9.771,15.003,0.107c0-34.833,0-69.667,0-104.5
+	                C70.001,59.368,54.999,59.282,54.999,68.946L54.999,68.946z">
+
+					 <animateTransform
+					 attributeName="transform"
+					 attributeType="XML"
+					 type="translate"
+					 begin="-0.1s"
+					 dur="1s"
+					 values="0,15;0,-15;0,15;"
+					 repeatCount="indefinite"
+					 />
+			</path>
+	       <path d="M117.999,68.946c0,34.833,0,69.667,0,104.5c0,9.686,15.003,9.771,15.003,0.107c0-34.833,0-69.667,0-104.5
+	                C133.002,59.368,117.999,59.282,117.999,68.946L117.999,68.946z">
+
+					 <animateTransform
+					 attributeName="transform"
+					 attributeType="XML"
+					 type="translate"
+					 begin="-0.3s"
+					 dur="1s"
+					 values="0,15;0,-15;0,15;"
+					 repeatCount="indefinite"
+					 />
+			</path>
+	        <path d="M149.498,68.946c0,34.833,0,69.667,0,104.5c0,9.686,15.004,9.771,15.004,0.107c0-34.833,0-69.667,0-104.5
+	                C164.502,59.368,149.498,59.282,149.498,68.946L149.498,68.946z">
+
+					 <animateTransform
+					 attributeName="transform"
+					 attributeType="XML"
+					 type="translate"
+					 begin="-0.4s"
+					 dur="1s"
+					 values="0,15;0,-15;0,15;"
+					 repeatCount="indefinite"
+					 />
+			</path>
+	        <path d="M210.498,68.946c0,34.833,0,69.667,0,104.5c0,9.686,15.004,9.771,15.004,0.107c0-34.833,0-69.667,0-104.5
+	                C225.502,59.368,210.498,59.282,210.498,68.946L210.498,68.946z">
+
+					 <animateTransform
+					 attributeName="transform"
+					 attributeType="XML"
+					 type="translate"
+					 begin="-0.6s"
+					 dur="1s"
+					 values="0,15;0,-15;0,15;"
+					 repeatCount="indefinite"
+					 />
+			</path>
+	        <path d="M179.998,68.946c0,34.833,0,69.667,0,104.5c0,9.686,15.004,9.771,15.004,0.107c0-34.833,0-69.667,0-104.5
+	                C195.002,59.368,179.998,59.282,179.998,68.946L179.998,68.946z">
+
+					 <animateTransform
+					 attributeName="transform"
+					 attributeType="XML"
+					 type="translate"
+					 begin="-0.5s"
+					 dur="1s"
+					 values="0,15;0,-15;0,15;"
+					 repeatCount="indefinite"
+					 />
+			</path>
+       </g>
+</svg>

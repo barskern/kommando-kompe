@@ -9,10 +9,42 @@
 
 var motor = (function(){
 
+    var StatusHåndterer = {
+        nåværendeStatus: undefined,
+        typer: (function(){
+        function Egenskaper(funksjonForNyttStatusObjekt){
+            this.funksjonForNyttStatusObjekt = funksjonForNyttStatusObjekt;
+            this.statusObjekt = undefined;
+        }
+        return {
+            SPILL: new Egenskaper(function(){ return new Spill(); }),
+            HOVEDMENY: new Egenskaper(function(){ return new Hovedmeny(); })
+        };
+        })(),
+        byttStatus: function(status){
+            if(requestID) window.cancelAnimationFrame(requestID); //Funker selv om det viser en error
+            status.statusObjekt = status.funksjonForNyttStatusObjekt();
+            StatusHåndterer.nåværendeStatus = status;
+            if(Ressurser.ressurserLastet()){
+                Ressurser.sjekkOmAlleLastetOgGjørTilbakekall();
+                init();
+            }
+        },
+        init: function(){
+            StatusHåndterer.nåværendeStatus.statusObjekt.init();
+        },
+        oppdater: function(){
+            StatusHåndterer.nåværendeStatus.statusObjekt.oppdater();
+        },
+        tegn: function(){
+            StatusHåndterer.nåværendeStatus.statusObjekt.tegn();
+        }
+    };
+
+
     var doku = window.document,
         canvas = doku.createElement('canvas'),
         ctx = canvas.getContext('2d'),
-        spill = new Spill(),
         klokke = {
             nå: 0,
             sisteTid: 0,
@@ -23,7 +55,9 @@ var motor = (function(){
                 this.sisteTid = this.nå;
             }
         },
-        tilbakekall = window.tilbakekall;
+        tilbakekall = window.tilbakekall,
+        inngangsdata = new Inngangsdata(),
+        requestID;
 
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
@@ -36,22 +70,27 @@ var motor = (function(){
         });
     };
 
+    StatusHåndterer.byttStatus(StatusHåndterer.typer.HOVEDMENY);
+    Ressurser.nårKlareKall(init);
+
     function main(){
         klokke.oppdater();
-        spill.oppdater();
-        spill.tegn();
-        requestAnimationFrame(main);
+        inngangsdata.oppdater();
+        StatusHåndterer.oppdater();
+        StatusHåndterer.tegn();
+        requestID = requestAnimationFrame(main);
     }
 
     function init(){
         doku.body.appendChild(canvas);
         klokke.sisteTid = Date.now();
-        spill.init();
+        StatusHåndterer.init();
+        inngangsdata.håndtererMuseKlikkPåCanvas();
         main();
     }
 
-    Ressurser.nårKlareKall(init);
-
     window.ctx = ctx;
     window.klokke = klokke;
+    window.inngangsdata = inngangsdata;
+    window.StatusHåndterer = StatusHåndterer;
 })();

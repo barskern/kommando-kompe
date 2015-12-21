@@ -7,6 +7,29 @@
  *
  */
 
+var Mønster = {};
+Mønster.typer = {};
+
+Ressurser.nårKlareKall(function() {
+    Mønster.typer = (function () {
+        function Egenskaper(mønster){
+            this.mønster = mønster;
+        }
+        var alleMønster = {}, atlasType = Atlas.typer.mønster, mønsterJSON = atlasType.hentJSON(), atlasBilde = atlasType.hentBilde();
+        for(var nåværendeNavn in mønsterJSON){
+            if(mønsterJSON.hasOwnProperty(nåværendeNavn)) {
+                var nåværende = mønsterJSON[nåværendeNavn];
+                var tmpcanvas = document.createElement('canvas'), tmpctx = tmpcanvas.getContext('2d');
+                tmpcanvas.width = nåværende.bredde;
+                tmpcanvas.height = nåværende.høyde;
+                tmpctx.drawImage(atlasBilde,nåværende.x,nåværende.y,nåværende.bredde,nåværende.høyde,0,0,nåværende.bredde,nåværende.høyde);
+                if(!alleMønster[nåværendeNavn]) alleMønster[nåværendeNavn] = new Egenskaper(tmpctx.createPattern(tmpcanvas,"repeat"));
+            }
+        }
+        return alleMønster;
+    })();
+});
+
 Terreng.typer = (function(){
     function Egenskaper(atlas,bildeNavn,initNøkkelpunktKart){
         this.atlas = atlas;

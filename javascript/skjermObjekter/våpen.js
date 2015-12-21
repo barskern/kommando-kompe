@@ -62,7 +62,7 @@ Våpen.prototype.oppdater = function(eier){
 
     for(var i = 0; i < this.prosjektiler.length; i++){
         var prosjektil = this.prosjektiler[i];
-        if(prosjektil.erILive){
+        if(!prosjektil.død){
             prosjektil.oppdater(this.mål);
         } else {
             this.prosjektiler.splice(i,1);
@@ -86,13 +86,13 @@ function Prosjektil(eier,globalX,globalY,type,positivRetning){
     this.y = globalY - Spill.globalY;
     this.type = type;
     this.positivRetning = positivRetning;
-    this.erILive = true;
+    this.død = false;
 }
 
 Prosjektil.prototype.oppdater = function(mål){
     if(mål) this.sjekkKollisjon(mål);
     this.globalX += ((this.positivRetning ? 1 : -1) * this.type.meterPerSekund * config.pikselPerMeter * klokke.delta);
-    if(this.x > ctx.canvas.width || this.x < -this.type.bredde) this.erILive = false;
+    if(this.x > ctx.canvas.width || this.x < -this.type.bredde) this.død = true;
     this.x = this.globalX - Spill.globalX;
 };
 
@@ -104,12 +104,20 @@ Prosjektil.prototype.sjekkKollisjon = function(enheter){
     var kulePunkt = this.hentKulePunkt();
     for(var i = 0; i < enheter.length; i++){
         var nåværende = enheter[i];
-        if(nåværende.erILive() &&
+        if(!nåværende.død &&
             kulePunkt[0] > nåværende.globalX &&
             kulePunkt[0] < nåværende.globalX + nåværende.bredde) {
-            this.erILive = false;
+            this.død = true;
+
             nåværende.skad(this.type.skade);
-            //if(this.eier && this.eier.nårMotstanderDrept) this.eier.nårMotstanderDrept();
+
+            if(nåværende.død){
+                var våpen = this.eier;
+                if(våpen){
+                    var våpenEier = våpen.eier;
+                    if(våpenEier && våpenEier.nårMotstanderDrept) våpenEier.nårMotstanderDrept(nåværende);
+                }
+            }
         }
     }
 

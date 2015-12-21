@@ -42,7 +42,7 @@ FiendeBølge.prototype.oppdater = function(){
     }
     for(var i = 0; i < this.fiender.length; i++){
         var nåværende = this.fiender[i];
-        if(nåværende.erILive()){
+        if(!nåværende.død){
             nåværende.oppdater();
         } else {
             this.fiender.splice(i,1);

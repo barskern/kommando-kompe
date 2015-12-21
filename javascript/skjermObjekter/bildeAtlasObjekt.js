@@ -8,28 +8,22 @@
  */
 
 function BildeAtlasObjekt(atlas,bildeNavn,x,y,bredde,høyde){
-    this.x = x;
-    this.y = y;
-    this.bredde = bredde;
-    this.høyde = høyde;
-    this.rotasjon = 0;
+    SkjemObjekt.call(this,x,y,bredde,høyde);
     this.atlas = atlas;
     this.bildeNavn = bildeNavn;
-    this.reflekterX = false;
-    this.reflekterY = false;
     this.bildeData = false;
 
     this.lag = [];
 
-
-    if(høyde === 0 || bredde === 0){
-        Ressurser.nårKlareKall(function(){
-            this.settBreddeHøyde(this.bildeNavn);
-            this.atlasBildeLag(0, false, bildeNavn);
-            this.lagBildeData();
-        }.bind(this));
-    }
+    Ressurser.nårKlareKall(function(){
+        if(this.høyde === 0 || this.bredde === 0) this.settBreddeHøyde();
+        this.atlasBildeLag(0, false, bildeNavn);
+        this.lagBildeData();
+    }.bind(this));
 }
+
+BildeAtlasObjekt.prototype = Object.create(SkjemObjekt.prototype);
+BildeAtlasObjekt.prototype.constructor = BildeAtlasObjekt;
 
 
 BildeAtlasObjekt.tegnHjelpeLinje = function(x1,y1,x2,y2){
@@ -57,15 +51,11 @@ BildeAtlasObjekt.tegnGradient = function(x1,y1,x2,y2,x,y,bredde,høyde,farge1,fa
 BildeAtlasObjekt.prototype.lagBildeData = function(){
     if(!this.bildeData && this.bredde && this.høyde){
         var tmpCanvas = document.createElement('canvas');
-        tmpCanvas.width = window.innerWidth;
-        tmpCanvas.height = window.innerHeight;
+        tmpCanvas.width = 100000;
+        tmpCanvas.height = 100000;
         var tmpctx = tmpCanvas.getContext('2d');
-        BildeAtlasObjekt.prototype.tegn.call(this,tmpctx);
-        this.bildeData = tmpctx.getImageData(this.x,this.y,this.bredde,this.høyde);
-        /*tmpctx.strokeStyle = "black";
-        tmpctx.strokeWidth = "3px";
-        tmpctx.strokeRect(this.x,this.y,this.bredde,this.høyde);
-        document.body.appendChild(tmpCanvas);*/
+        BildeAtlasObjekt.prototype.tegn.call(this, tmpctx);
+        this.bildeData = tmpctx.getImageData((this.x||0),this.y,this.bredde,this.høyde);
     }
 };
 
@@ -137,9 +127,9 @@ BildeAtlasObjekt.prototype.tegnLag = function(lag, kontekst){
     kontekst = (!kontekst ? ctx : kontekst);
     var atlas = (lag.atlas || this.atlas);
     if(lag.bildeNavn) {
-        var bildeData = atlas.data[lag.bildeNavn];
+        var bildePosOgStørrelse = atlas.data[lag.bildeNavn];
         var atlasBilde = Ressurser.bildeHåndterer.atlas.hentBilde(atlas.navn);
-        if (bildeData && atlasBilde && lag.vis) {
+        if (bildePosOgStørrelse && atlasBilde && lag.vis) {
             var lagBredde = lag.bredde;
             var lagHøyde = lag.høyde;
             kontekst.save();
@@ -147,7 +137,7 @@ BildeAtlasObjekt.prototype.tegnLag = function(lag, kontekst){
             kontekst.rotate(lag.rotasjon * (Math.PI / 180));
             kontekst.scale((lag.reflekter.x ? -1 : 1), (lag.reflekter.y ? -1 : 1));
             kontekst.drawImage(atlasBilde,
-                bildeData.x, bildeData.y, bildeData.bredde, bildeData.høyde,
+                bildePosOgStørrelse.x, bildePosOgStørrelse.y, bildePosOgStørrelse.bredde, bildePosOgStørrelse.høyde,
                 (-lagBredde / 2), (-lagHøyde / 2), lagBredde, lagHøyde);
             kontekst.restore();
         }
@@ -158,9 +148,7 @@ BildeAtlasObjekt.prototype.tegnLag = function(lag, kontekst){
 BildeAtlasObjekt.prototype.tegn = function(kontekst){
     kontekst = (!kontekst ? ctx : kontekst);
     kontekst.save();
-    kontekst.translate(this.x + (this.bredde/2), this.y + (this.høyde/2));
-    kontekst.rotate(this.rotasjon * (Math.PI/180));
-    kontekst.scale((this.reflekterX ? -1 : 1),(this.reflekterY ? -1 : 1));
+    this.transformer(kontekst);
     this.lag.forEach(function(lag){
         this.tegnLag(lag,kontekst);
     }.bind(this));
@@ -170,7 +158,8 @@ BildeAtlasObjekt.prototype.tegn = function(kontekst){
 BildeAtlasObjekt.prototype.settBreddeHøyde = function(bildeNavn, atlas, objekt){
     objekt = (!objekt ? this : objekt);
     atlas = (!atlas ? this.atlas : atlas);
-    if(bildeNavn) {
+    bildeNavn = (!bildeNavn ? this.bildeNavn : bildeNavn);
+    if(bildeNavn && atlas && objekt) {
         var bilde = atlas.data[bildeNavn];
         objekt.bredde = ((objekt.bredde === 0 && (bilde.bredde / bilde.høyde) * objekt.høyde) || objekt.bredde);
         objekt.høyde = ((objekt.høyde === 0 && (bilde.høyde / bilde.bredde) * objekt.bredde) || objekt.høyde);

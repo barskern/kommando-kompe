@@ -25,23 +25,24 @@ function Spill() {
 
     this.init = function(){
         this.terreng.init();
+        this.spiller.init();
     };
 
 
     this.oppdater = function(){
-        Terreng.nåværende.globalX = Spill.globalX;
         this.terreng.oppdater();
         this.fiendeBølge.oppdater();
         this.spiller.oppdater();
     };
 
     this.tegn = function(){
-        //ctx.clearRect(0,0,ctx.canvas.width,ctx.canvas.height);
         ctx.fillStyle = "white";
         ctx.fillRect(0,0,ctx.canvas.width,ctx.canvas.height);
         this.terreng.tegn();
         this.spiller.tegn();
         this.fiendeBølge.tegn();
+
+        ctx.strokeText("Poeng : "+this.spiller.poeng.toString(),100,100,500);
 
         /*for(var i = 1; i < Math.max(ctx.canvas.width,ctx.canvas.height)/config.pikselPerMeter; i++){
             BildeAtlasObjekt.tegnHjelpeLinje(i*config.pikselPerMeter,0,i*config.pikselPerMeter,ctx.canvas.height);

@@ -20,37 +20,35 @@
             -o-background-size: cover;
             background-size: cover;
             font-family: "Open-sans", Helvetica, sans-serif;
+            margin: 0;
+            padding: 0;
         }
         body{
             margin: 0;
+            padding: 0;
         }
         canvas {
+            padding: 0;
+            margin: 0;
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%,-50%);
         }
-        #comingSoon {
-            font-family: "Open-sans", Helvetica, sans-serif;
-            position: absolute;
-            font-size: 100px;
-            color: red;
-            top: 300px;
-            left: 30%;
-            text-shadow: 5px 10px 10px black;
-        }
     </style>
 </head>
 <body>
-
-    <!--<div id="comingSoon">Coming soon</div>-->
     <script src="javascript/config.js"></script>
 
     <script src="javascript/hjelpere/ressurser.js"></script>
     <script src="javascript/hjelpere/inngangsdata.js"></script>
 
     <script src="javascript/skjermObjekter/atlas.js"></script>
+    <script src="javascript/skjermObjekter/skjermObjekt.js"></script>
+    <script src="javascript/skjermObjekter/mønsterObjekt.js"></script>
     <script src="javascript/skjermObjekter/bildeAtlasObjekt.js"></script>
+    <script src="javascript/skjermObjekter/tekstObjekt.js"></script>
+    <script src="javascript/skjermObjekter/mønsterKnapp.js"></script>
     <script src="javascript/skjermObjekter/verdensObjekt.js"></script>
     <script src="javascript/skjermObjekter/kollisjon.js"></script>
 
@@ -64,7 +62,9 @@
 
     <script src="javascript/skjermObjekter/typer.js"></script>
 
+    <script src="javascript/hovedmeny.js"></script>
     <script src="javascript/spill.js"></script>
+
     <script src="javascript/motor.js"></script>
 
 </body>

@@ -57,10 +57,6 @@ Enhet.prototype.skyt = function(){
         this.våpen.skyt();
 };
 
-Enhet.prototype.erILive = function(){
-    return !this.død;
-};
-
 Enhet.prototype.skad = function(mendge){
     this.liv -= mendge;
     if(this.liv < 0) this.drep();
@@ -75,8 +71,8 @@ Enhet.prototype.sjekkKollisjonMedEnheter = function(enheter){
     for(var i = 0; i < enheter.length; i++){
         var nåværende = enheter[i];
         if(nåværende !== this &&
-            this.erSpawnet && this.erILive() &&
-            nåværende.erSpawnet && nåværende.erILive() &&
+            this.erSpawnet && !this.død &&
+            nåværende.erSpawnet && !nåværende.død &&
             nåværende.globalX + nåværende.bredde > this.globalX &&
             nåværende.globalX < this.globalX + this.bredde){
 
@@ -84,7 +80,6 @@ Enhet.prototype.sjekkKollisjonMedEnheter = function(enheter){
         }
     }
 };
-
 
 Enhet.prototype.oppdater = function(){
     this.reflekterX = (this.retningFartX !== 0 ? (this.retningFartX < 0) : this.reflekterX);
@@ -118,3 +113,4 @@ Enhet.prototype.oppdaterGlobalY = function(){
     if(this.globalY + this.høyde !== this.terrengHøyde) this.fartY -= config.pikselPerMeter * Enhet.gravitasjon * klokke.delta;
     else this.fartY = 0;
 };
+

@@ -39,6 +39,8 @@ Terreng.prototype.init = function(){
 };
 
 Terreng.prototype.oppdater = function(){
+    Terreng.nåværende.globalX = Spill.globalX;
+
     var gangerRepetert = Math.floor((this.globalX)/(2*this.bredde));
     this.x = (2*this.bredde*gangerRepetert) - (this.globalX);
 };

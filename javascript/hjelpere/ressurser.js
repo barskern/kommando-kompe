@@ -59,7 +59,7 @@
             var bilde = new Image();
             bilde.onload = function(){
                 bildeHåndterer.lastet[bane] = bilde;
-                sjekkOmAlleLastet();
+                sjekkOmAlleLastetOgGjørTilbakekall();
             };
             bildeHåndterer.lastet[bane] = false;
             bilde.src = "bilder/"+bane;
@@ -83,7 +83,7 @@
             xhttp.onreadystatechange = function(){
                 if(xhttp.readyState === 4 && xhttp.status === 200) {
                     filHåndterer.XMLer[bane] = xhttp.responseXML;
-                    sjekkOmAlleLastet();
+                    sjekkOmAlleLastetOgGjørTilbakekall();
                 }
             };
             filHåndterer.XMLer[bane] = false;
@@ -96,7 +96,7 @@
             xhttp.onreadystatechange = function(){
                 if(xhttp.readyState === 4 && xhttp.status === 200){
                     lagringsobjekt[bane] = xhttp.responseText;
-                    sjekkOmAlleLastet();
+                    sjekkOmAlleLastetOgGjørTilbakekall();
                 }
             };
             lagringsobjekt[bane] = false;
@@ -108,7 +108,7 @@
             return lagringsobjekt[bane];
         }
     };
-    function sjekkOmAlleLastet(){
+    function sjekkOmAlleLastetOgGjørTilbakekall(){
         if(ressurserLastet()) {
             nårFilerKlareTilbakekall.forEach(function (tk) {
                 tk();
@@ -143,7 +143,6 @@
             }
 
         }
-
         return klar;
     }
 
@@ -171,6 +170,7 @@
             hent: filHåndterer.hent
         },
         nårKlareKall: nårRessurserKlareKall,
-        ressurserLastet: ressurserLastet
+        ressurserLastet: ressurserLastet,
+        sjekkOmAlleLastetOgGjørTilbakekall: sjekkOmAlleLastetOgGjørTilbakekall
     };
 })();

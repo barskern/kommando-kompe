@@ -11,14 +11,10 @@
 function Spiller(atlas,bildeNavn,globalX,globalY,bredde,høyde){
     Enhet.call(this,atlas,bildeNavn,globalX,globalY,bredde,høyde);
 
+    this.poeng = 0;
+
     this.akselerasjonX = config.pikselPerMeter/7.33;
     this.akselerasjonY = config.pikselPerMeter/22;
-
-    this.inngangsdata = new Inngangsdata();
-    this.inngangsdata.leggTilTrykkeEvent('keydown',68,this.settAkselerasjon.bind(this,1,this.akselerasjonX));    //Høyre D
-    this.inngangsdata.leggTilTrykkeEvent('keydown',65,this.settAkselerasjon.bind(this,-1,this.akselerasjonX));   //Venstre A
-    this.inngangsdata.leggTilTrykkeEvent('keydown',87,this.hopp.bind(this,this.akselerasjonY));                  //Hopp W
-    this.inngangsdata.leggTilTrykkeEvent('keydown',32,this.skyt.bind(this));                                  //Skyt Mellomrom
 
     this.våpen = new Våpen(this,Fiende.alleSpawnedeFiender,Våpen.typer.M97Rifle,0,0,config.pikselPerMeter,0,Effekt.typer.GEVÆRLØPBLINK,
         [config.pikselPerMeter * 0.4,config.pikselPerMeter * 0.15]);
@@ -28,8 +24,18 @@ function Spiller(atlas,bildeNavn,globalX,globalY,bredde,høyde){
 Spiller.prototype = Object.create(Enhet.prototype);
 Spiller.prototype.constructor = Spiller;
 
+Spiller.prototype.nårMotstanderDrept = function(motstander){
+    this.poeng += motstander.type.poengForDrap;
+};
+
+Spiller.prototype.init = function(){
+    inngangsdata.leggTilTrykkeEvent('keydown',68,this.settAkselerasjon.bind(this,1,this.akselerasjonX));    //Høyre D
+    inngangsdata.leggTilTrykkeEvent('keydown',65,this.settAkselerasjon.bind(this,-1,this.akselerasjonX));   //Venstre A
+    inngangsdata.leggTilTrykkeEvent('keydown',87,this.hopp.bind(this,this.akselerasjonY));                  //Hopp W
+    inngangsdata.leggTilTrykkeEvent('keydown',32,this.skyt.bind(this));                                //Skyt Mellomrom
+};
+
 Spiller.prototype.oppdater = function(){
-    this.inngangsdata.oppdater();
     if(this.x < 200){
         Spill.globalX += this.fartX * klokke.delta;
         this.x = 200;
