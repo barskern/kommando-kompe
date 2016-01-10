@@ -19,12 +19,10 @@ function Våpen(eier,mål,type,globalX,globalY,bredde,høyde,effektType,effektSt
     this.tidSidenSisteSkudd = Number.MAX_VALUE/2;
 
     if(effektType) {
-        Ressurser.nårKlareKall(function () {
-            this.atlasBildeLag(1, effektType.atlas, effektType.bildeNavn);
-            this.settSynlighetLag(1, false);
-            this.størrelseLag(1, effektStørrelse[0], effektStørrelse[1]);
-            this.transformerLag(1, this.bredde * this.type.relativtGeværløp[0], this.høyde * this.type.relativtGeværløp[1] - (effektStørrelse[1] / 2));
-        }.bind(this));
+        this.atlasBildeLag(1, effektType.atlas, effektType.bildeNavn);
+        this.settSynlighetLag(1, false);
+        this.størrelseLag(1, effektStørrelse[0], effektStørrelse[1]);
+        this.transformerLag(1, this.bredde * this.type.relativtGeværløp[0], this.høyde * this.type.relativtGeværløp[1] - (effektStørrelse[1] / 2));
     }
 }
 
@@ -109,7 +107,7 @@ Prosjektil.prototype.sjekkKollisjon = function(enheter){
             kulePunkt[0] < nåværende.globalX + nåværende.bredde) {
             this.død = true;
 
-            nåværende.skad(this.type.skade);
+            nåværende.taSkade(this.type.skade);
 
             if(nåværende.død){
                 var våpen = this.eier;

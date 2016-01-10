@@ -7,51 +7,50 @@
  *
  */
 
-function Fiende(mål,type,globalX,globalY,bredde,høyde){
-    Enhet.call(this,type.atlas,type.bildeNavn,globalX,globalY,bredde,høyde);
-    this.type = type;
+function Fiende(atlas,bildeNavn,mål,globalX,globalY,bredde,høyde){
+    Enhet.call(this,atlas,bildeNavn,globalX,globalY,bredde,høyde);
     this.mål = mål;
     this.erSpawnet = false;
 
-    this.fartsgrenseX = 2 * config.pikselPerMeter;
+    this.poengForDrap = 0;
 
-    this.våpen = new Våpen(this,false,type.våpenType,0,0,0,0);
-    this.relativtVåpenAnkerpunkt = type.relativtVåpenAnkerpunkt;
+    this.helsebar = new Statusbar(this.x,this.y,this.bredde,9,"red");
+    this.helsebar.lagKantLinje(1,"white");
 }
 
 Fiende.prototype = Object.create(Enhet.prototype);
 Fiende.prototype.constructor = Fiende;
 
-Fiende.alleSpawnedeFiender = [];
+Fiende.nåværendeFiender = [];
 
 Fiende.sorterAlleLagdeFiender = function(){
-    Fiende.alleSpawnedeFiender.sort(function(fiende1,fiende2){
+    Fiende.nåværendeFiender.sort(function(fiende1, fiende2){
         return fiende1.globalX - fiende2.globalX;
     });
 };
 
 Fiende.prototype.spawn = function(){
     this.erSpawnet = true;
-    Fiende.alleSpawnedeFiender.push(this);
+    Fiende.nåværendeFiender.push(this);
 };
 
+Fiende.prototype.drep = function(){
+    Enhet.prototype.drep.call(this);
+    Fiende.nåværendeFiender.splice(Fiende.nåværendeFiender.indexOf(this),1);
+};
 
 Fiende.prototype.oppdater = function(){
     this.retningFartX = (this.mål.globalX < this.globalX) ? -1 : 1;
+    this.reflekterX = (this.retningFartX < 0);
     Enhet.prototype.oppdater.call(this);
 
-    Fiende.sorterAlleLagdeFiender();
-    this.sjekkKollisjonMedEnheter(Fiende.alleSpawnedeFiender);
+    this.helsebar.x = this.x;
+    this.helsebar.y = this.y - 20;
+    this.helsebar.nåværendeProssess = this.liv/this.maxLiv;
+};
 
-    if(Math.abs(this.mål.globalX - this.globalX) > (3*config.pikselPerMeter) || this.x < 0 || this.x > ctx.canvas.width - this.bredde){
-        if(this.mål.globalX > this.globalX + 5){
-            this.settAkselerasjon(1,this.type.nåværendeAkselerasjonX);
-        } else if(this.mål.globalX < this.globalX - 5){
-            this.settAkselerasjon(-1,this.type.akselerasjonY);
-        }
-    } else if(this.globalY + this.høyde === this.terrengHøyde) {
-        this.retningFartX = (this.mål.globalX < this.globalX) ? -1 : 1;
-        //this.skyt();
-    }
+Fiende.prototype.tegn = function(){
+    Enhet.prototype.tegn.call(this);
+    this.helsebar.tegn();
 };
 

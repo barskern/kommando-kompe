@@ -11,28 +11,26 @@
 function Enhet(atlas,bildeNavn,globalX,globalY,bredde,høyde){
     VerdensObjekt.call(this,atlas,bildeNavn,globalX,globalY,bredde,høyde);
     this.liv = 100;
+    this.maxLiv = this.liv;
     this.død = false;
 
     this.fartX = 0;
     this.nåværendeAkselerasjonX = 0;
+
     this.fartsgrenseX = 4 * config.pikselPerMeter;
-    this.retningFartX = 0;
+    this.retningFartX = 1;
 
     this.akselerasjonX = config.pikselPerMeter/7.33;
     this.deakselerasjonX = 10 * config.pikselPerMeter;
-
     this.akselerasjonY = config.pikselPerMeter/22;
-    this.fartY = 0;
 
-    this.våpen = undefined;
-    this.relativtVåpenAnkerpunkt = [0,0];
+    this.fartY = 0;
 }
 
 Enhet.prototype = Object.create(VerdensObjekt.prototype);
 Enhet.prototype.constructor = Enhet;
 
 Enhet.gravitasjon = 9.81; // m/s^2
-
 
 //Medlemsfunksjoner
 
@@ -52,19 +50,13 @@ Enhet.prototype.hopp = function(mengde){
         this.fartY = mengde * config.pikselPerMeter;
 };
 
-Enhet.prototype.skyt = function(){
-    if(this.våpen)
-        this.våpen.skyt();
-};
-
-Enhet.prototype.skad = function(mendge){
+Enhet.prototype.taSkade = function(mendge){
     this.liv -= mendge;
     if(this.liv < 0) this.drep();
 };
 
 Enhet.prototype.drep = function(){
     this.død = true;
-    Fiende.alleSpawnedeFiender.splice(Fiende.alleSpawnedeFiender.indexOf(this),1);
 };
 
 Enhet.prototype.sjekkKollisjonMedEnheter = function(enheter){
@@ -82,17 +74,14 @@ Enhet.prototype.sjekkKollisjonMedEnheter = function(enheter){
 };
 
 Enhet.prototype.oppdater = function(){
-    this.reflekterX = (this.retningFartX !== 0 ? (this.retningFartX < 0) : this.reflekterX);
     this.oppdaterGlobalX();
     this.terrengHøyde = Terreng.nåværende.hentLineærY(this.globalX + (this.bredde/2));
     this.oppdaterGlobalY();
     VerdensObjekt.prototype.oppdater.call(this);
-    if(this.våpen) this.våpen.oppdater(this);
 };
 
 Enhet.prototype.tegn = function(){
     BildeAtlasObjekt.prototype.tegn.call(this);
-    if(this.våpen) this.våpen.tegn();
 };
 
 
@@ -102,9 +91,10 @@ Enhet.prototype.oppdaterGlobalX = function(){
         && -(this.deakselerasjonX * klokke.delta) < this.fartX
         && this.fartX < this.deakselerasjonX * klokke.delta)
         this.fartX = 0;
-    this.nåværendeAkselerasjonX = (Math.abs(this.fartX) > 1 && (-this.retningFartX) * this.deakselerasjonX) || 0;
+
+    this.nåværendeAkselerasjonX = (Math.abs(this.fartX) > 1 ? (-this.retningFartX) * this.deakselerasjonX : 0);
     this.globalX += this.fartX * klokke.delta;
-    this.retningFartX = (this.fartX != 0 && this.fartX/Math.abs(this.fartX)) || this.retningFartX;
+    this.retningFartX = (this.fartX !== 0 ? this.fartX/Math.abs(this.fartX) : this.retningFartX);
 };
 
 Enhet.prototype.oppdaterGlobalY = function(){

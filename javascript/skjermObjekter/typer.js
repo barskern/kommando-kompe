@@ -8,27 +8,26 @@
  */
 
 var Mønster = {};
-Mønster.typer = {};
+Mønster.typer = (function () {
+    function Egenskaper(atlas,bildeNavn){
+        this.atlas = atlas;
+        this.bildeNavn = bildeNavn;
+        this.mønster = false;
 
-Ressurser.nårKlareKall(function() {
-    Mønster.typer = (function () {
-        function Egenskaper(mønster){
-            this.mønster = mønster;
-        }
-        var alleMønster = {}, atlasType = Atlas.typer.mønster, mønsterJSON = atlasType.hentJSON(), atlasBilde = atlasType.hentBilde();
-        for(var nåværendeNavn in mønsterJSON){
-            if(mønsterJSON.hasOwnProperty(nåværendeNavn)) {
-                var nåværende = mønsterJSON[nåværendeNavn];
-                var tmpcanvas = document.createElement('canvas'), tmpctx = tmpcanvas.getContext('2d');
-                tmpcanvas.width = nåværende.bredde;
-                tmpcanvas.height = nåværende.høyde;
-                tmpctx.drawImage(atlasBilde,nåværende.x,nåværende.y,nåværende.bredde,nåværende.høyde,0,0,nåværende.bredde,nåværende.høyde);
-                if(!alleMønster[nåværendeNavn]) alleMønster[nåværendeNavn] = new Egenskaper(tmpctx.createPattern(tmpcanvas,"repeat"));
-            }
-        }
-        return alleMønster;
-    })();
-});
+        Ressurser.nårKlareKall(function(){
+            var nåværende = this.atlas.hentJSON()[this.bildeNavn], tmpcanvas = document.createElement('canvas'), tmpctx = tmpcanvas.getContext('2d');
+            tmpcanvas.width = nåværende.bredde;
+            tmpcanvas.height = nåværende.høyde;
+            tmpctx.drawImage(this.atlas.hentBilde(),nåværende.x,nåværende.y,nåværende.bredde,nåværende.høyde,0,0,nåværende.bredde,nåværende.høyde);
+            this.mønster = tmpctx.createPattern(tmpcanvas,"repeat");
+        }.bind(this));
+
+    }
+    return {
+        KAMUFLASJE: new Egenskaper(Atlas.typer.KommandoKompeAtlas, "kamuflasjeMonster"),
+        METALL: new Egenskaper(Atlas.typer.KommandoKompeAtlas, "metallMonster")
+    };
+})();
 
 Terreng.typer = (function(){
     function Egenskaper(atlas,bildeNavn,initNøkkelpunktKart){
@@ -38,7 +37,7 @@ Terreng.typer = (function(){
         this.nøkkelpunktKart = undefined;
     }
     return {
-        SKOGLAND: new Egenskaper(Atlas.typer.spillerOgTerreng,"landskapEksempel640x417",function(){
+        SKOGLAND: new Egenskaper(Atlas.typer.KommandoKompeAtlas,"skogland",function(){
                 return [[-Number.MAX_VALUE, 0.85 * ctx.canvas.height, 1], [Number.MAX_VALUE, 0.85 * ctx.canvas.height, 1]];
             }
         )
@@ -52,7 +51,8 @@ Effekt.typer = (function(){
         this.varighet = varighet;
     }
     return {
-        GEVÆRLØPBLINK: new Egenskaper(Atlas.typer.effekter,"geværløpflamme",0.08)
+        GEVÆRLØPBLINK: new Egenskaper(Atlas.typer.KommandoKompeAtlas,"geværlopflamme",0.08),
+        BLOOD: new Egenskaper(Atlas.typer.KommandoKompeAtlas,"blodEffekt",3)
     }
 })();
 
@@ -83,26 +83,7 @@ Våpen.typer = (function(){
     }
     return {
         ROBOTBRYSTKANON: new Egenskaper(false,false,false,[0,0],[0,0],40,Prosjektil.typer.STORKULE),
-        SPAS12: new Egenskaper(Atlas.typer.Challagundla4Weapons,"Spas - 12",false,[(892/1660),(354/672)],[0,0],30,Prosjektil.typer.VANLIG),
-        M97Rifle: new Egenskaper(Atlas.typer.Challagundla4Weapons,"M97 Rifle",false,[0.33,0.5],[0.9,0.22],500,Prosjektil.typer.VANLIG)
-    };
-})();
-
-Fiende.typer = (function(){
-    function Egenskaper(atlas,bildeNavn,bredde,høyde,våpenType,relativtVåpenAnkerpunkt,akselerasjonX,akselerasjonY,poengForDrap){
-        this.atlas = atlas;
-        this.bildeNavn = bildeNavn;
-        this.bredde = bredde;
-        this.høyde = høyde;
-        this.våpenType = våpenType;
-        this.relativtVåpenAnkerpunkt = relativtVåpenAnkerpunkt;
-        this.nåværendeAkselerasjonX = akselerasjonX;
-        this.akselerasjonY = akselerasjonY;
-        this.poengForDrap = poengForDrap;
-    }
-    return {
-        ROBOT: new Egenskaper(Atlas.typer.enheter,"fiendeRobot",0,2*config.pikselPerMeter,
-            Våpen.typer.ROBOTBRYSTKANON,[0.6,0.2],
-            config.pikselPerMeter/80,config.pikselPerMeter/100,100)
+        M4A1PULSERIFLE: new Egenskaper(Atlas.typer.KommandoKompeAtlas,"M4A1_PulseRifle",false,[0,0],[0,0],300,Prosjektil.typer.VANLIG),
+        M97RIFLE: new Egenskaper(Atlas.typer.KommandoKompeAtlas,"M97Rifle",false,[0.33,0.5],[0.9,0.22],500,Prosjektil.typer.VANLIG)
     };
 })();

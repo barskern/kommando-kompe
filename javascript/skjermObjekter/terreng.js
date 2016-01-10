@@ -9,14 +9,14 @@
 
 
 function Terreng(type){
-    Ressurser.nårKlareKall(function(){
-        this.settBreddeHøydeMedMinimum(this.bildeNavn,1,ctx.canvas.height);
-    }.bind(this));
     BildeAtlasObjekt.call(this,type.atlas,type.bildeNavn,0,0,0,0);
     this.globalX = this.x;
     this.globalY = this.y;
     this.type = type;
     this.farge = "black";
+
+    this.settBreddeHøydeMedMinimum(this.bildeNavn,1,ctx.canvas.height);
+    this.atlasBildeLag(0,false,this.bildeNavn);
 }
 
 Terreng.prototype = Object.create(BildeAtlasObjekt.prototype);

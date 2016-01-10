@@ -16,15 +16,15 @@ function FiendeBølge(mål,globalX,globalY,typer,fiendeTypeIndeks,sekundPerFiend
     this.fiendeTypeIndeks = fiendeTypeIndeks;
     this.sekundPerFiende = sekundPerFiende;
     this.tidSidenSistFiende = Number.MAX_VALUE/2;
-    this.fiender = [];
+    this.erTom = false;
+    this.bølgeFiender = [];
     this.uSpawnedeFiender = (function(){
         var resultat = [];
         for(var i = 0; i < this.fiendeTypeIndeks.length; i++) {
             var nåværende = this.fiendeTypeIndeks[i];
             if (typeof nåværende === "number") {
                 if (nåværende < this.typer.length) {
-                    var type = this.typer[nåværende];
-                    var fi = new Fiende(this.mål, type, this.globalX, this.globalY, type.bredde, type.høyde);
+                    var fi = new this.typer[nåværende](mål,globalX,globalY);
                     resultat.push(fi);
                 }
             }
@@ -40,12 +40,16 @@ FiendeBølge.prototype.oppdater = function(){
         this.spawnFiende();
         this.tidSidenSistFiende = 0;
     }
-    for(var i = 0; i < this.fiender.length; i++){
-        var nåværende = this.fiender[i];
+    for(var i = 0; i < this.bølgeFiender.length; i++){
+        var nåværende = this.bølgeFiender[i];
         if(!nåværende.død){
             nåværende.oppdater();
         } else {
-            this.fiender.splice(i,1);
+            this.bølgeFiender.splice(i,1);
+            if(this.uSpawnedeFiender.length == 0 && this.bølgeFiender.length == 0) {
+                this.erTom = true;
+                break;
+            }
             i--;
         }
     }
@@ -54,14 +58,14 @@ FiendeBølge.prototype.oppdater = function(){
 FiendeBølge.prototype.spawnFiende = function(){
     if(this.uSpawnedeFiender.length > 0){
         var fi = this.uSpawnedeFiender.shift();
+        fi.globalX = (Spill.globalX + ctx.canvas.width / 2) + (ctx.canvas.width * (Math.random() > 0.5 ? 1 : -1));
         fi.spawn();
-        fi.globalX = this.mål.globalX + 1000*(Math.random() > 0.5 ? 1 : -1);
-        this.fiender.push(fi);
+        this.bølgeFiender.push(fi);
     }
 };
 
 FiendeBølge.prototype.tegn = function(){
-    this.fiender.forEach(function(fiende){
+    this.bølgeFiender.forEach(function(fiende){
         if(fiende) fiende.tegn();
     });
 };

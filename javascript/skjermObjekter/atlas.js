@@ -26,11 +26,7 @@ Atlas.typer = (function(){
         return Ressurser.bildeHåndterer.atlas.hentBilde(this.navn);
     };
     return {
-        Challagundla4Weapons: new Egenskap("Challagundla4Weapons"),
-        spillerOgTerreng: new Egenskap("spillerOgTerreng"),
-        effekter: new Egenskap("effekter"),
-        enheter: new Egenskap("enheter"),
-        mønster: new Egenskap("mønster")
+        KommandoKompeAtlas: new Egenskap("KommandoKompeAtlas")
     };
 })();
 

@@ -1,0 +1,13 @@
+{
+"blodEffekt" : { "x": 0, "y": 0, "bredde": 742, "høyde": 643 },
+"skogland" : { "x": 0, "y": 643, "bredde": 640, "høyde": 417 },
+"kamuflasjeMonster" : { "x": 742, "y": 0, "bredde": 512, "høyde": 512 },
+"dagnysKompebu" : { "x": 742, "y": 512, "bredde": 350, "høyde": 362 },
+"KommandoKompeAnsikt" : { "x": 640, "y": 874, "bredde": 300, "høyde": 258 },
+"M4A1_PulseRifle" : { "x": 0, "y": 1060, "bredde": 300, "høyde": 118 },
+"M97Rifle" : { "x": 0, "y": 1178, "bredde": 300, "høyde": 78 },
+"komandoKalleFigur" : { "x": 1092, "y": 512, "bredde": 126, "høyde": 259 },
+"fiendeRobot" : { "x": 1092, "y": 771, "bredde": 105, "høyde": 500 },
+"geværlopflamme" : { "x": 640, "y": 643, "bredde": 100, "høyde": 38 },
+"metallMonster" : { "x": 640, "y": 681, "bredde": 64, "høyde": 60 }
+}

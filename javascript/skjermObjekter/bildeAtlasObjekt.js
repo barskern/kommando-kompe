@@ -15,11 +15,9 @@ function BildeAtlasObjekt(atlas,bildeNavn,x,y,bredde,høyde){
 
     this.lag = [];
 
-    Ressurser.nårKlareKall(function(){
-        if(this.høyde === 0 || this.bredde === 0) this.settBreddeHøyde();
-        this.atlasBildeLag(0, false, bildeNavn);
-        this.lagBildeData();
-    }.bind(this));
+    if(this.høyde === 0 ? this.bredde !== 0 : this.bredde === 0) this.settBreddeHøyde();
+    if(this.bredde !== 0 && this.høyde !== 0) this.atlasBildeLag(0, false, bildeNavn);
+    //this.lagBildeData();
 }
 
 BildeAtlasObjekt.prototype = Object.create(SkjemObjekt.prototype);
@@ -80,10 +78,10 @@ BildeAtlasObjekt.prototype.settSynlighetLag = function(indeks,synlighet){
     if(lag) lag.vis = synlighet;
 };
 
-BildeAtlasObjekt.prototype.atlasBildeLag = function(indeks, atlas, bildeNavn){
+BildeAtlasObjekt.prototype.atlasBildeLag = function(indeks, atlas, bildeNavn, slettTidligere){
     var lag = this.lag[indeks];
     if(!lag){
-        this.initLag(indeks, false);
+        this.initLag(indeks, slettTidligere);
         lag = this.lag[indeks];
     }
     lag.atlas = atlas;

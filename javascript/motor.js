@@ -7,23 +7,23 @@
  *
  */
 
-var motor = (function(){
+var KommandoKompe = function(){
 
     var StatusHåndterer = {
         nåværendeStatus: undefined,
         typer: (function(){
-        function Egenskaper(funksjonForNyttStatusObjekt){
-            this.funksjonForNyttStatusObjekt = funksjonForNyttStatusObjekt;
-            this.statusObjekt = undefined;
-        }
-        return {
-            SPILL: new Egenskaper(function(){ return new Spill(); }),
-            HOVEDMENY: new Egenskaper(function(){ return new Hovedmeny(); })
-        };
+            function Egenskaper(funksjonForNyttStatusObjekt){
+                this.funksjonForNyttStatusObjekt = funksjonForNyttStatusObjekt;
+                this.statusObjekt = undefined;
+            }
+            return {
+                SPILL: new Egenskaper(function(statusArgs){ return new Spill(statusArgs[0],statusArgs[1]); }),
+                HOVEDMENY: new Egenskaper(function(statusArgs){ return new Hovedmeny(); })
+            };
         })(),
-        byttStatus: function(status){
+        byttStatus: function(status, statusArgs){
             if(requestID) window.cancelAnimationFrame(requestID); //Funker selv om det viser en error
-            status.statusObjekt = status.funksjonForNyttStatusObjekt();
+            status.statusObjekt = status.funksjonForNyttStatusObjekt(statusArgs);
             StatusHåndterer.nåværendeStatus = status;
             if(Ressurser.ressurserLastet()){
                 Ressurser.sjekkOmAlleLastetOgGjørTilbakekall();
@@ -48,10 +48,11 @@ var motor = (function(){
         klokke = {
             nå: 0,
             sisteTid: 0,
+            tidsganger: 1,
             delta: 0, //sekunder
             oppdater: function (){
                 this.nå = Date.now();
-                this.delta = (this.nå - this.sisteTid) / 1000.0;
+                this.delta = ((this.nå - this.sisteTid) / 1000.0) * this.tidsganger;
                 this.sisteTid = this.nå;
             }
         },
@@ -93,4 +94,8 @@ var motor = (function(){
     window.klokke = klokke;
     window.inngangsdata = inngangsdata;
     window.StatusHåndterer = StatusHåndterer;
-})();
+};
+
+addEventListener("DOMContentLoaded",function(){
+    KommandoKompe();
+});
