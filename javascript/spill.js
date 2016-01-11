@@ -72,7 +72,7 @@ Spill.prototype.init = function(){
     this.tilMenyen.tekst.høyde = 50;
     this.tilMenyen.tekst.lagKantLinje(1,"white");
 
-    this.terreng = new Terreng(Terreng.typer.SKOGLAND);
+    this.terreng = new Terreng(Terreng.typer.URBAN);
     this.terreng.settSomNåværende();
 
     Spill.globalX = 0;

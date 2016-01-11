@@ -46,7 +46,6 @@ Lyd.typer = (function() {
     };
 })();
 
-
 Terreng.typer = (function(){
     function Egenskaper(atlas,bildeNavn,bildeKomponenter,initNøkkelpunktKart){
         this.atlas = atlas;
@@ -60,7 +59,7 @@ Terreng.typer = (function(){
                 return [[-Number.MAX_VALUE, 0.85 * ctx.canvas.height, 1], [Number.MAX_VALUE, 0.85 * ctx.canvas.height, 1]];
             }
         ),
-        URBAN: new Egenskaper(Atlas.typer.LANDSKAP,"urban4Komponent",function(){
+        URBAN: new Egenskaper(Atlas.typer.LANDSKAP,"urban4Komponent",1,function(){
                 return [[-Number.MAX_VALUE, 0.85 * ctx.canvas.height, 1], [Number.MAX_VALUE, 0.85 * ctx.canvas.height, 1]];
         })
     };

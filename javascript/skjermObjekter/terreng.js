@@ -7,7 +7,6 @@
  *
  */
 
-
 function Terreng(type){
     BildeAtlasObjekt.call(this,type.atlas,type.bildeNavn,0,0,0,0);
     this.globalX = this.x;
@@ -41,27 +40,16 @@ Terreng.prototype.init = function(){
 Terreng.prototype.oppdater = function(){
     Terreng.nåværende.globalX = Spill.globalX;
 
-    var gangerRepetert = Math.floor((this.globalX)/(2*this.bredde));
-    this.x = (2*this.bredde*gangerRepetert) - (this.globalX);
+    var komponentRepetert = Math.floor((this.globalX)/(this.bredde/this.type.komponenter));
+    this.x = ((this.bredde/this.type.komponenter)*komponentRepetert) - (this.globalX);
 };
 
 Terreng.prototype.tegn = function(){
     //console.log("første: x = "+this.x+" | y ="+this.y+" | b = "+this.bredde+" | h = "+this.høyde);
     BildeAtlasObjekt.prototype.tegn.call(this);
     var midlertidigX = this.x;
-    this.x += this.bredde - 2;
-    this.reflekter.x = true;
-    //console.log("andre: x = "+this.x+" | y ="+this.y+" | b = "+this.bredde+" | h = "+this.høyde);
+    this.x += this.bredde;
     BildeAtlasObjekt.prototype.tegn.call(this);
-    this.reflekter.x = false;
-    this.x += this.bredde - 2;
-    //console.log("tredje: x = "+this.x+" | y ="+this.y+" | b = "+this.bredde+" | h = "+this.høyde);
-    BildeAtlasObjekt.prototype.tegn.call(this);
-    this.x += this.bredde - 2;
-    this.reflekter.x = true;
-    //console.log("fjerde: x = "+this.x+" | y ="+this.y+" | b = "+this.bredde+" | h = "+this.høyde);
-    BildeAtlasObjekt.prototype.tegn.call(this);
-    this.reflekter.x = false;
     this.x = midlertidigX;
 };
 

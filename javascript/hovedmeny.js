@@ -70,7 +70,11 @@ Hovedmeny.prototype.oppdater = function(){
     this.fjesHopping.yFart += this.fjesHopping.yAks;
     this.fjesHopping.xFart += this.fjesHopping.xAks;
     if(this.kommandoKompeFjes.y + this.kommandoKompeFjes.høyde > 2*senterCanvasY) this.fjesHopping.yFart = -400;
-    if(this.kommandoKompeFjes.x < 0 || this.kommandoKompeFjes.x + this.kommandoKompeFjes.bredde > 2*senterCanvasX) this.fjesHopping.xFart = -this.fjesHopping.xFart;
+    if(this.kommandoKompeFjes.x < 0 || this.kommandoKompeFjes.x + this.kommandoKompeFjes.bredde > 2*senterCanvasX) {
+        this.fjesHopping.xFart = -this.fjesHopping.xFart;
+        this.kommandoKompeFjes.reflekter.x = !this.kommandoKompeFjes.reflekter.x;
+        this.kommandoKompeFjes.rotasjon = -this.kommandoKompeFjes.rotasjon;
+    }
 
     this.kommandoKompeFjes.x += this.fjesHopping.xFart*klokke.delta;
     this.kommandoKompeFjes.y += this.fjesHopping.yFart*klokke.delta;
