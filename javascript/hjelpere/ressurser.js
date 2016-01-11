@@ -13,7 +13,7 @@
 (function(){
     window.tilbakekall = { onresize: [] };
 
-    var laster = {}, nårFilerKlareTilbakekall = [];
+    var nårFilerKlareTilbakekall = [];
 
     var bildeHåndterer = {
         /**
@@ -78,6 +78,7 @@
         filer: {},
         XMLer: {},
         JSONer: {},
+        lyder: {},
         _lastXML: function(bane){
             var xhttp = new XMLHttpRequest();
             xhttp.onreadystatechange = function(){
@@ -89,6 +90,20 @@
             filHåndterer.XMLer[bane] = false;
             xhttp.open('GET', bane, true);
             xhttp.send();
+        },
+        _lastLyd: function(bane){
+            var request = new XMLHttpRequest();
+            request.open('GET', bane, true);
+            request.responseType = 'arraybuffer';
+
+            request.onload = function() {
+                lydctx.decodeAudioData(request.response, function(buffer){
+                    filHåndterer.lyder[bane] = buffer;
+                    sjekkOmAlleLastetOgGjørTilbakekall();
+                });
+            };
+            filHåndterer.lyder[bane] = false;
+            request.send();
         },
         _last: function(bane,lagringsobjekt){
             lagringsobjekt = (!lagringsobjekt ? filHåndterer.filer : lagringsobjekt);
@@ -103,7 +118,10 @@
             xhttp.open('GET', bane, true);
             xhttp.send();
         },
-        hent: function(bane,lagringsobjekt){
+        hentLyd: function(bane){
+            return filHåndterer.hent(bane,filHåndterer.lyder);
+        },
+        hent: function(bane, lagringsobjekt){
             lagringsobjekt = (!lagringsobjekt ? filHåndterer.filer : lagringsobjekt);
             return lagringsobjekt[bane];
         }
@@ -122,7 +140,7 @@
      */
     function ressurserLastet(){
         var klar = true;
-        var lister = [bildeHåndterer.lastet, filHåndterer.XMLer];
+        var lister = [bildeHåndterer.lastet, filHåndterer.JSONer, filHåndterer.lyder];
         var nøkkelLister = (function(){
             var resultat = [], i = 0;
             lister.forEach(function(liste){
@@ -166,10 +184,16 @@
             }
         },
         filHåndterer: {
-            last: filHåndterer._last,
-            hent: filHåndterer.hent
+            last: {
+                lyd: filHåndterer._lastLyd,
+                fil: filHåndterer._last
+            },
+            hent: {
+                fil:filHåndterer.hent,
+                lyd:filHåndterer.hentLyd
+            }
         },
-        nårKlareKall: nårRessurserKlareKall,
+        nårRessurserKlareKall: nårRessurserKlareKall,
         ressurserLastet: ressurserLastet,
         sjekkOmAlleLastetOgGjørTilbakekall: sjekkOmAlleLastetOgGjørTilbakekall
     };

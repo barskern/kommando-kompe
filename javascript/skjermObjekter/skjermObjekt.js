@@ -13,15 +13,14 @@ function SkjemObjekt(x,y,bredde,høyde){
     this.bredde = bredde;
     this.høyde = høyde;
     this.rotasjon = 0;
-    this.reflekterX = false;
-    this.reflekterY = false;
-    this.skalarX = 1;
-    this.skalarY = 1;
+    this.reflekter = { x: false, y: false };
+    this.skalar =  { x: 1, y:1 };
+    this.roterRundt = { x: 0.5, y: 0.5 };
 }
 
 SkjemObjekt.prototype.transformer = function(kontekst){
     kontekst = (!kontekst?ctx:kontekst);
-    kontekst.translate(this.x+(this.bredde/2),this.y+(this.høyde/2));
+    kontekst.translate(this.x+(this.roterRundt.x * this.bredde),this.y+(this.roterRundt.y * this.høyde));
     kontekst.rotate(-(this.rotasjon * (Math.PI/180)));
-    kontekst.scale(this.skalarX * (this.reflekterX?-1:1),this.skalarY * (this.reflekterY?-1:1));
+    kontekst.scale(this.skalar.x * (this.reflekter.x?-1:1),this.skalar.y * (this.reflekter.y?-1:1));
 };

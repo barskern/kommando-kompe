@@ -15,7 +15,7 @@ Atlas.typer = (function(){
         this.navn = navn;
         this.data = false;
 
-        Ressurser.nårKlareKall(function(){
+        Ressurser.nårRessurserKlareKall(function(){
             this.data = JSON.parse(Ressurser.bildeHåndterer.atlas.hentJSON(this.navn));
         }.bind(this));
     }
@@ -26,7 +26,8 @@ Atlas.typer = (function(){
         return Ressurser.bildeHåndterer.atlas.hentBilde(this.navn);
     };
     return {
-        KommandoKompeAtlas: new Egenskap("KommandoKompeAtlas")
+        TING: new Egenskap("KommandoKompeAtlas"),
+        LANDSKAP: new Egenskap("landskap")
     };
 })();
 

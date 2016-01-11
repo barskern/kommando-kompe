@@ -41,7 +41,7 @@ Fiende.prototype.drep = function(){
 
 Fiende.prototype.oppdater = function(){
     this.retningFartX = (this.mål.globalX < this.globalX) ? -1 : 1;
-    this.reflekterX = (this.retningFartX < 0);
+    this.reflekter.x = (this.retningFartX < 0);
     Enhet.prototype.oppdater.call(this);
 
     this.helsebar.x = this.x;

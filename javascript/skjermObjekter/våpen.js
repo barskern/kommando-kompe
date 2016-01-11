@@ -7,23 +7,27 @@
  *
  */
 
-function Våpen(eier,mål,type,globalX,globalY,bredde,høyde,effektType,effektStørrelse){
+function Våpen(eier,mål,type,globalX,globalY,bredde,høyde){
     VerdensObjekt.call(this,type.atlas,type.navn,globalX,globalY,bredde,høyde);
 
     this.eier = eier;
     this.mål = mål;
     this.type = type;
-    this.effektType = effektType;
-    this.effektStørrelse = effektStørrelse;
     this.prosjektiler = [];
     this.tidSidenSisteSkudd = Number.MAX_VALUE/2;
 
-    if(effektType) {
-        this.atlasBildeLag(1, effektType.atlas, effektType.bildeNavn);
+    this.lyd = new Lyd(type.lydType);
+
+    if(this.type.effektType) {
+        this.atlasBildeLag(1, this.type.effektType.atlas, this.type.effektType.bildeNavn);
         this.settSynlighetLag(1, false);
-        this.størrelseLag(1, effektStørrelse[0], effektStørrelse[1]);
-        this.transformerLag(1, this.bredde * this.type.relativtGeværløp[0], this.høyde * this.type.relativtGeværløp[1] - (effektStørrelse[1] / 2));
-    }
+        this.størrelseLag(1, this.type.effektStørrelse[0], this.type.effektStørrelse[1]);
+        this.settRelativPosLag(1,
+            (this.type.relativtGeværløp[0] - ((this.type.effektStørrelse[0] / this.bredde) * this.type.effektType.relativtAnkerpunkt[0])),
+            (this.type.relativtGeværløp[1] - ((this.type.effektStørrelse[1] / this.høyde) * this.type.effektType.relativtAnkerpunkt[1]))
+        );
+}
+
 }
 
 Våpen.prototype = Object.create(VerdensObjekt.prototype);
@@ -33,28 +37,30 @@ Våpen.prototype.constructor = Våpen;
 Våpen.prototype.skyt = function(){
     if(this.tidSidenSisteSkudd > (1/this.type.skuddPerSekund)){
         this.prosjektiler.push(new Prosjektil(this,
-            this.globalX+((this.reflekterX ? -1 : 1)*this.bredde*this.type.relativtGeværløp[0]),
+            this.globalX+((this.reflekter.x ? -1 : 1)*0.3*this.bredde*this.type.relativtGeværløp[0]),
             this.globalY+(this.høyde*this.type.relativtGeværløp[1]),
-            this.type.prosjektilType,!this.reflekterX
+            this.type.prosjektilType,!this.reflekter.x
         ));
         this.tidSidenSisteSkudd = 0;
         this.settSynlighetLag(1, true);
+
+        if(this.lyd) this.lyd.avspill();
     }
 };
 
 Våpen.prototype.oppdater = function(eier){
     eier = (!eier ? this.eier : eier);
     this.tidSidenSisteSkudd += klokke.delta;
-    if(this.effektType && this.tidSidenSisteSkudd > this.effektType.varighet) this.settSynlighetLag(1,false);
+    if(this.type.effektType && this.tidSidenSisteSkudd > this.type.effektType.varighet) this.settSynlighetLag(1,false);
 
     if(eier){
-        var eierAnkerX = Math.abs((eier.reflekterX ? 1 : 0) - eier.relativtVåpenAnkerpunkt[0]) * eier.bredde;
-        var våpenAnkerX = Math.abs((eier.reflekterX ? 1 : 0) - this.type.relativtAnkerpunkt[0]) * this.bredde;
+        var eierAnkerX = Math.abs((eier.reflekter.x ? 1 : 0) - eier.relativtVåpenAnkerpunkt[0]) * eier.bredde;
+        var våpenAnkerX = Math.abs((eier.reflekter.x ? 1 : 0) - this.type.relativtAnkerpunkt[0]) * this.bredde;
         var eierAnkerY = eier.relativtVåpenAnkerpunkt[1] * eier.høyde;
         var våpenAnkerY = this.type.relativtAnkerpunkt[1] * this.høyde;
         this.globalX = eier.globalX + eierAnkerX - våpenAnkerX;
         this.globalY = eier.globalY + eierAnkerY - våpenAnkerY;
-        this.reflekterX = eier.reflekterX;
+        this.reflekter.x = eier.reflekter.x;
     }
     VerdensObjekt.prototype.oppdater.call(this);
 
@@ -69,10 +75,10 @@ Våpen.prototype.oppdater = function(eier){
 };
 
 Våpen.prototype.tegn = function(){
-    BildeAtlasObjekt.prototype.tegn.call(this);
     this.prosjektiler.forEach(function(prosjektil){
         prosjektil.tegn();
     });
+    BildeAtlasObjekt.prototype.tegn.call(this);
 };
 
 
@@ -104,18 +110,20 @@ Prosjektil.prototype.sjekkKollisjon = function(enheter){
         var nåværende = enheter[i];
         if(!nåværende.død &&
             kulePunkt[0] > nåværende.globalX &&
-            kulePunkt[0] < nåværende.globalX + nåværende.bredde) {
-            this.død = true;
-
-            nåværende.taSkade(this.type.skade);
-
-            if(nåværende.død){
-                var våpen = this.eier;
-                if(våpen){
-                    var våpenEier = våpen.eier;
-                    if(våpenEier && våpenEier.nårMotstanderDrept) våpenEier.nårMotstanderDrept(nåværende);
+            kulePunkt[0] < nåværende.globalX + nåværende.bredde &&
+            kulePunkt[1] > nåværende.globalY &&
+            kulePunkt[1] < nåværende.globalY + nåværende.høyde) {
+                this.død = true;
+                if(nåværende.truffetAvKuleLyd) nåværende.truffetAvKuleLyd.avspill();
+                nåværende.taSkade(this.type.skade);
+                if(nåværende.død){
+                    var våpen = this.eier;
+                    if(våpen){
+                        var våpenEier = våpen.eier;
+                        if(våpenEier && våpenEier.nårMotstanderDrept) våpenEier.nårMotstanderDrept(nåværende);
+                    }
                 }
-            }
+                break;
         }
     }
 

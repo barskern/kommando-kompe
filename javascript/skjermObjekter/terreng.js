@@ -50,18 +50,18 @@ Terreng.prototype.tegn = function(){
     BildeAtlasObjekt.prototype.tegn.call(this);
     var midlertidigX = this.x;
     this.x += this.bredde - 2;
-    this.reflekterX = true;
+    this.reflekter.x = true;
     //console.log("andre: x = "+this.x+" | y ="+this.y+" | b = "+this.bredde+" | h = "+this.høyde);
     BildeAtlasObjekt.prototype.tegn.call(this);
-    this.reflekterX = false;
+    this.reflekter.x = false;
     this.x += this.bredde - 2;
     //console.log("tredje: x = "+this.x+" | y ="+this.y+" | b = "+this.bredde+" | h = "+this.høyde);
     BildeAtlasObjekt.prototype.tegn.call(this);
     this.x += this.bredde - 2;
-    this.reflekterX = true;
+    this.reflekter.x = true;
     //console.log("fjerde: x = "+this.x+" | y ="+this.y+" | b = "+this.bredde+" | h = "+this.høyde);
     BildeAtlasObjekt.prototype.tegn.call(this);
-    this.reflekterX = false;
+    this.reflekter.x = false;
     this.x = midlertidigX;
 };
 
@@ -122,11 +122,6 @@ Terreng.prototype.hentLineærY = function(påX){
         stigningstallet = (deltaY / deltaX) || 0;
     }
     return (stigningstallet * (påX - ((nåværende && nåværende[0]) || 0))) + ((nåværende && nåværende[1]) || Number.MAX_VALUE);
-};
-
-Terreng.prototype.hentType = function(id){
-    console.log("id = "+id);
-    return Terreng.typer[id];
 };
 
 

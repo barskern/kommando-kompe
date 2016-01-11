@@ -10,7 +10,9 @@
 var KommandoKompe = function(){
 
     var StatusHåndterer = {
+        nybyttetStatus: undefined,
         nåværendeStatus: undefined,
+        statusByttet: false,
         typer: (function(){
             function Egenskaper(funksjonForNyttStatusObjekt){
                 this.funksjonForNyttStatusObjekt = funksjonForNyttStatusObjekt;
@@ -22,13 +24,9 @@ var KommandoKompe = function(){
             };
         })(),
         byttStatus: function(status, statusArgs){
-            if(requestID) window.cancelAnimationFrame(requestID); //Funker selv om det viser en error
             status.statusObjekt = status.funksjonForNyttStatusObjekt(statusArgs);
-            StatusHåndterer.nåværendeStatus = status;
-            if(Ressurser.ressurserLastet()){
-                Ressurser.sjekkOmAlleLastetOgGjørTilbakekall();
-                init();
-            }
+            StatusHåndterer.nybyttetStatus = status;
+            StatusHåndterer.statusByttet = true;
         },
         init: function(){
             StatusHåndterer.nåværendeStatus.statusObjekt.init();
@@ -41,10 +39,18 @@ var KommandoKompe = function(){
         }
     };
 
-
     var doku = window.document,
         canvas = doku.createElement('canvas'),
         ctx = canvas.getContext('2d'),
+        lydctx = (function() {
+            try {
+                window.AudioContext = window.AudioContext || window.webkitAudioContext;
+                return new AudioContext();
+            }
+            catch(e) {
+                alert("Du kan ikke få lyd,\n synd det pølsa! \nBytt nettleser!");
+            }
+        })(),
         klokke = {
             nå: 0,
             sisteTid: 0,
@@ -72,25 +78,35 @@ var KommandoKompe = function(){
     };
 
     StatusHåndterer.byttStatus(StatusHåndterer.typer.HOVEDMENY);
-    Ressurser.nårKlareKall(init);
+    Ressurser.nårRessurserKlareKall(init);
 
     function main(){
         klokke.oppdater();
         inngangsdata.oppdater();
-        StatusHåndterer.oppdater();
-        StatusHåndterer.tegn();
-        requestID = requestAnimationFrame(main);
+        if(!StatusHåndterer.statusByttet) {
+            StatusHåndterer.oppdater();
+            StatusHåndterer.tegn();
+            requestID = requestAnimationFrame(main);
+        } else {
+            if(requestID) window.cancelAnimationFrame(requestID); //Funker selv om det viser en error
+            init();
+        }
     }
 
     function init(){
         doku.body.appendChild(canvas);
         klokke.sisteTid = Date.now();
+        if(StatusHåndterer.statusByttet){
+            StatusHåndterer.nåværendeStatus = StatusHåndterer.nybyttetStatus;
+            StatusHåndterer.statusByttet = false;
+        }
         StatusHåndterer.init();
         inngangsdata.håndtererMuseKlikkPåCanvas();
         main();
     }
 
     window.ctx = ctx;
+    window.lydctx = lydctx;
     window.klokke = klokke;
     window.inngangsdata = inngangsdata;
     window.StatusHåndterer = StatusHåndterer;

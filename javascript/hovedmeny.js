@@ -8,9 +8,7 @@
  */
 
 function Hovedmeny(){
-
     this.fjesHopping = {xFart:100,yFart:0,xAks:0,yAks:9.81};
-
 }
 
 Hovedmeny.prototype.init = function(){
@@ -22,19 +20,19 @@ Hovedmeny.prototype.init = function(){
             this.tekst.fillStyle = "white";
             this.tekst.kantlinje.strokeStyle = "black";
             var reduserMed = 4;
-            this.skalarY = this.skalarX = (this.bredde-2*reduserMed)/this.bredde;
+            this.skalar.y = this.skalar.x = (this.bredde-2*reduserMed)/this.bredde;
         },
         function(){
             this.tekst.fillStyle = "black";
             this.tekst.kantlinje.strokeStyle = "white";
-            this.skalarX = this.skalarY = 1;
+            this.skalar.x = this.skalar.y = 1;
         },
         function(){
             StatusHåndterer.byttStatus(StatusHåndterer.typer.SPILL,["skogland", 1]);
         }
     );
 
-    this.kommandoKompeFjes = new BildeAtlasObjekt(Atlas.typer.KommandoKompeAtlas, "KommandoKompeAnsikt",0,200,200,0);
+    this.kommandoKompeFjes = new BildeAtlasObjekt(Atlas.typer.TING, "KommandoKompeAnsikt",0,200,200,0);
     this.kommandoKompeFjes.rotasjon = 12;
 
     this.alleKlikkbareObjekter = [this.spillKnapp];
@@ -52,6 +50,10 @@ Hovedmeny.prototype.init = function(){
     this.spillKnapp.tekst.font = "Stencil";
     this.spillKnapp.tekst.høyde = 50;
     this.spillKnapp.tekst.lagKantLinje(1,"white");
+
+    this.lyd = new Lyd(Lyd.typer.BAKGRUNN);
+    this.lyd.loop = true;
+    this.lyd.avspill();
 };
 
 Hovedmeny.prototype.oppdater = function(){

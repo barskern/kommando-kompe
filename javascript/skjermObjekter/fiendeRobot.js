@@ -8,7 +8,7 @@
  */
 
 function FiendeRobot(mål,globalX,globalY){
-    Fiende.call(this,Atlas.typer.KommandoKompeAtlas,"fiendeRobot",mål,globalX,globalY,0,2*config.pikselPerMeter);
+    Fiende.call(this,Atlas.typer.TING,"fiendeRobotOverkropp",mål,globalX,globalY,0,2*config.pikselPerMeter);
 
     this.fartsgrenseX = 2 * config.pikselPerMeter;
 
@@ -24,6 +24,24 @@ function FiendeRobot(mål,globalX,globalY){
     this.angrepsPoeng = 15;
     this.tidSidenForrigeAngrep = Number.MAX_VALUE;
     this.tidMellomAngrep = 4;
+
+    this.animasjonsVerdier = {
+        maxBeinUtslag: 40
+    };
+
+    this.atlasBildeLag(1,false,"fiendeRobotBein");
+    this.skalerLag(1,0.9,0.6);
+    this.settRelativPosLag(1,0.1,0.43);
+    this.roterLagRundt(1,0.5,0.15);
+
+    this.atlasBildeLag(2,false,"fiendeRobotBein");
+    this.skalerLag(2,0.9,0.6);
+    this.settRelativPosLag(2,0.1,0.43);
+    this.roterLagRundt(2,0.5,0.15);
+
+    this.atlasBildeLag(3,false,"fiendeRobotOverkropp");
+
+    this.truffetAvKuleLyd = new Lyd(Lyd.typer.KULETREFFERMETALL);
 }
 
 FiendeRobot.prototype = Object.create(Fiende.prototype);
@@ -32,11 +50,9 @@ FiendeRobot.prototype.constructor = FiendeRobot;
 FiendeRobot.prototype.oppdater = function(){
     Fiende.prototype.oppdater.call(this);
     this.våpen.oppdater(this);
+    this.gåAnimasjon();
 
     this.tidSidenForrigeAngrep += klokke.delta;
-
-    //console.log("Mathabs = "+Math.abs((this.mål.globalX + (this.mål.bredde/2)) - (this.globalX + (this.bredde/2))));
-    //console.log("bredde + bredde = "+((this.bredde/2)+(this.mål.bredde/2)));
 
     if(Math.abs((this.mål.globalX + (this.mål.bredde/2)) - (this.globalX + (this.bredde/2))) > ((this.bredde/2)+(this.mål.bredde/2))){
         if(this.mål.globalX > this.globalX){
@@ -61,3 +77,19 @@ FiendeRobot.prototype.tegn = function(){
 FiendeRobot.prototype.skyt = function(){
     this.våpen.skyt();
 };
+
+FiendeRobot.prototype.gåAnimasjon = (function(){
+    var fortegn = 1;
+    return function(){
+        var prosess = this.lag[2].rotasjon / this.animasjonsVerdier.maxBeinUtslag, fartAbs;
+        if((fartAbs = Math.abs(this.fartX)) < 1){
+            this.roterLag(1,-10*this.lag[1].rotasjon*klokke.delta,true);
+            this.roterLag(2,-10*this.lag[2].rotasjon*klokke.delta,true);
+        } else {
+            if(prosess > 1) fortegn = -1;
+            if(prosess < -1) fortegn = 1;
+            this.roterLag(1,-0.5*fortegn*fartAbs*klokke.delta,true);
+            this.roterLag(2,0.5*fortegn*fartAbs*klokke.delta,true);
+        }
+    }
+})();

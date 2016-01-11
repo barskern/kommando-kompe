@@ -1,13 +1,16 @@
 {
 "blodEffekt" : { "x": 0, "y": 0, "bredde": 742, "høyde": 643 },
-"skogland" : { "x": 0, "y": 643, "bredde": 640, "høyde": 417 },
-"kamuflasjeMonster" : { "x": 742, "y": 0, "bredde": 512, "høyde": 512 },
-"dagnysKompebu" : { "x": 742, "y": 512, "bredde": 350, "høyde": 362 },
-"KommandoKompeAnsikt" : { "x": 640, "y": 874, "bredde": 300, "høyde": 258 },
-"M4A1_PulseRifle" : { "x": 0, "y": 1060, "bredde": 300, "høyde": 118 },
-"M97Rifle" : { "x": 0, "y": 1178, "bredde": 300, "høyde": 78 },
-"komandoKalleFigur" : { "x": 1092, "y": 512, "bredde": 126, "høyde": 259 },
-"fiendeRobot" : { "x": 1092, "y": 771, "bredde": 105, "høyde": 500 },
-"geværlopflamme" : { "x": 640, "y": 643, "bredde": 100, "høyde": 38 },
-"metallMonster" : { "x": 640, "y": 681, "bredde": 64, "høyde": 60 }
+"kamuflasjeMonster" : { "x": 0, "y": 643, "bredde": 512, "høyde": 512 },
+"KommandoKompeAnsikt" : { "x": 742, "y": 0, "bredde": 300, "høyde": 258 },
+"M4A1_PulseRifle" : { "x": 742, "y": 258, "bredde": 300, "høyde": 118 },
+"M97Rifle" : { "x": 742, "y": 376, "bredde": 300, "høyde": 78 },
+"kommandoKalleOverkropp" : { "x": 1042, "y": 0, "bredde": 117, "høyde": 257 },
+"fiendeRobotOverkropp" : { "x": 512, "y": 643, "bredde": 104, "høyde": 500 },
+"geværlopflamme" : { "x": 742, "y": 454, "bredde": 100, "høyde": 38 },
+"fiendeRobotBein" : { "x": 742, "y": 492, "bredde": 90, "høyde": 247 },
+"kommandoKalleHøyreArm" : { "x": 616, "y": 643, "bredde": 81, "høyde": 39 },
+"kommandoKalleVenstreBein" : { "x": 842, "y": 454, "bredde": 71, "høyde": 160 },
+"metallMonster" : { "x": 616, "y": 682, "bredde": 64, "høyde": 60 },
+"kommandoKalleVenstreArm" : { "x": 1042, "y": 257, "bredde": 59, "høyde": 41 },
+"kommandoKalleHøyreBein" : { "x": 1042, "y": 298, "bredde": 47, "høyde": 139 }
 }

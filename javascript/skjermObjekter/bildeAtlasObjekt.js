@@ -17,7 +17,6 @@ function BildeAtlasObjekt(atlas,bildeNavn,x,y,bredde,høyde){
 
     if(this.høyde === 0 ? this.bredde !== 0 : this.bredde === 0) this.settBreddeHøyde();
     if(this.bredde !== 0 && this.høyde !== 0) this.atlasBildeLag(0, false, bildeNavn);
-    //this.lagBildeData();
 }
 
 BildeAtlasObjekt.prototype = Object.create(SkjemObjekt.prototype);
@@ -60,17 +59,11 @@ BildeAtlasObjekt.prototype.lagBildeData = function(){
 BildeAtlasObjekt.prototype.initLag = function(indeks, slettTidligere){
     var lagObjekt = {
         atlas: this.atlas, bildeNavn: undefined,
-        rotasjon: 0, relativX: 0, relativY: 0,
+        rotasjon: 0, roterRundt: { x:0.5, y:0.5 }, relativ: { x: 0, y:0 },
         bredde: this.bredde, høyde: this.høyde,
-        reflekter: {x: false, y: false}, vis: true
+        reflekter: { x: false, y: false }, vis: true
     };
-    if(!this.lag[indeks]) {
-        this.lag.splice(indeks,0,lagObjekt);
-    } else {
-        if(slettTidligere){
-           this.lag.splice(indeks,1,lagObjekt);
-        }
-    }
+    this.lag.splice(indeks,(slettTidligere?1:0),lagObjekt);
 };
 
 BildeAtlasObjekt.prototype.settSynlighetLag = function(indeks,synlighet){
@@ -79,12 +72,9 @@ BildeAtlasObjekt.prototype.settSynlighetLag = function(indeks,synlighet){
 };
 
 BildeAtlasObjekt.prototype.atlasBildeLag = function(indeks, atlas, bildeNavn, slettTidligere){
+    this.initLag(indeks, slettTidligere);
     var lag = this.lag[indeks];
-    if(!lag){
-        this.initLag(indeks, slettTidligere);
-        lag = this.lag[indeks];
-    }
-    lag.atlas = atlas;
+    lag.atlas = (atlas == false ? this.atlas : atlas);
     lag.bildeNavn = bildeNavn;
 };
 
@@ -94,25 +84,29 @@ BildeAtlasObjekt.prototype.reflekterLag = function(indeks, reflekterX, reflekter
     lagReflekter.y = reflekterY;
 };
 
-BildeAtlasObjekt.prototype.roterLag = function(indeks, mengde){
-    this.lag[indeks].rotasjon += mengde;
+BildeAtlasObjekt.prototype.roterLag = function(indeks, mengde, beholdTidligere){
+    this.lag[indeks].rotasjon = mengde + (beholdTidligere ? this.lag[indeks].rotasjon : 0);
 };
 
-BildeAtlasObjekt.prototype.skalerLag = function(indeks, xMengde, yMengde, nySkalering){
-    nySkalering = (nySkalering === 'undefined');
+BildeAtlasObjekt.prototype.roterLagRundt = function(indeks, relativX, relativY){
+    this.lag[indeks].roterRundt = { x:relativX, y:relativY };
+};
+
+BildeAtlasObjekt.prototype.skalerLag = function(indeks, xMengde, yMengde, beholdTidligere){
     var lag = this.lag[indeks];
-    if(nySkalering){
+    if(beholdTidligere){
+        lag.bredde *= xMengde;
+        lag.høyde *= yMengde;
+    } else {
         lag.bredde = this.bredde * xMengde;
-        lag.høyde = this.høyde * xMengde;
+        lag.høyde = this.høyde * yMengde;
     }
-    lag.bredde *= xMengde;
-    lag.høyde *= yMengde;
 };
 
-BildeAtlasObjekt.prototype.transformerLag = function(indeks, xMengde, yMengde){
+BildeAtlasObjekt.prototype.settRelativPosLag = function(indeks, relativX, relativY){
     var lag = this.lag[indeks];
-    lag.relativX += xMengde;
-    lag.relativY += yMengde;
+    lag.relativ.x = relativX;
+    lag.relativ.y = relativY;
 };
 
 BildeAtlasObjekt.prototype.størrelseLag = function(indeks, bredde, høyde){
@@ -122,21 +116,21 @@ BildeAtlasObjekt.prototype.størrelseLag = function(indeks, bredde, høyde){
 };
 
 BildeAtlasObjekt.prototype.tegnLag = function(lag, kontekst){
-    kontekst = (!kontekst ? ctx : kontekst);
-    var atlas = (lag.atlas || this.atlas);
     if(lag.bildeNavn) {
+        kontekst = (!kontekst ? ctx : kontekst);
+        var atlas = (lag.atlas || this.atlas);
         var bildePosOgStørrelse = atlas.data[lag.bildeNavn];
         var atlasBilde = Ressurser.bildeHåndterer.atlas.hentBilde(atlas.navn);
         if (bildePosOgStørrelse && atlasBilde && lag.vis) {
             var lagBredde = lag.bredde;
             var lagHøyde = lag.høyde;
             kontekst.save();
-            kontekst.translate(lag.relativX - (this.bredde / 2) + lagBredde / 2, lag.relativY - (this.høyde / 2) + lagHøyde / 2);
-            kontekst.rotate(lag.rotasjon * (Math.PI / 180));
+            kontekst.translate((lag.relativ.x * this.bredde) - (this.bredde / 2) + lag.roterRundt.x * lagBredde, (lag.relativ.y * this.høyde) - (this.høyde / 2) + lag.roterRundt.y * lagHøyde);
+            kontekst.rotate(-lag.rotasjon * (Math.PI / 180));
             kontekst.scale((lag.reflekter.x ? -1 : 1), (lag.reflekter.y ? -1 : 1));
             kontekst.drawImage(atlasBilde,
                 bildePosOgStørrelse.x, bildePosOgStørrelse.y, bildePosOgStørrelse.bredde, bildePosOgStørrelse.høyde,
-                (-lagBredde / 2), (-lagHøyde / 2), lagBredde, lagHøyde);
+                lag.roterRundt.x * (-lagBredde), lag.roterRundt.y * (-lagHøyde), lagBredde, lagHøyde);
             kontekst.restore();
         }
     }
