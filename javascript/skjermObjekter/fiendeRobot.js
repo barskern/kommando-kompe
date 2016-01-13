@@ -40,8 +40,6 @@ function FiendeRobot(mål,globalX,globalY){
     this.roterLagRundt(2,0.5,0.15);
 
     this.atlasBildeLag(3,false,"fiendeRobotOverkropp");
-
-    this.truffetAvKuleLyd = new Lyd(Lyd.typer.KULETREFFERMETALL);
 }
 
 FiendeRobot.prototype = Object.create(Fiende.prototype);

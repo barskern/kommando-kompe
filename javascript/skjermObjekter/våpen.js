@@ -104,29 +104,32 @@ Prosjektil.prototype.hentKulePunkt = function(){
     return [(this.globalX+((this.positivRetning ? 1 : 0)*this.type.bredde)),(this.globalY+(this.type.høyde/2))];
 };
 
-Prosjektil.prototype.sjekkKollisjon = function(enheter){
+Prosjektil.prototype.sjekkKollisjon = function(enheterEllerEnhet){
     var kulePunkt = this.hentKulePunkt();
-    for(var i = 0; i < enheter.length; i++){
-        var nåværende = enheter[i];
-        if(!nåværende.død &&
-            kulePunkt[0] > nåværende.globalX &&
-            kulePunkt[0] < nåværende.globalX + nåværende.bredde &&
-            kulePunkt[1] > nåværende.globalY &&
-            kulePunkt[1] < nåværende.globalY + nåværende.høyde) {
-                this.død = true;
-                if(nåværende.truffetAvKuleLyd) nåværende.truffetAvKuleLyd.avspill();
-                nåværende.taSkade(this.type.skade);
-                if(nåværende.død){
-                    var våpen = this.eier;
-                    if(våpen){
-                        var våpenEier = våpen.eier;
-                        if(våpenEier && våpenEier.nårMotstanderDrept) våpenEier.nårMotstanderDrept(nåværende);
-                    }
-                }
-                break;
+    if(enheterEllerEnhet.constructor === Array){
+        for(var i = 0; i < enheterEllerEnhet.length; i++) {
+            if(this.sjekkKollisjon(enheterEllerEnhet[i])) break;
         }
+    } else {
+        if(!enheterEllerEnhet.død &&
+            kulePunkt[0] > enheterEllerEnhet.globalX &&
+            kulePunkt[0] < enheterEllerEnhet.globalX + enheterEllerEnhet.bredde &&
+            kulePunkt[1] > enheterEllerEnhet.globalY &&
+            kulePunkt[1] < enheterEllerEnhet.globalY + enheterEllerEnhet.høyde) {
+            this.død = true;
+            if(enheterEllerEnhet.truffetAvKuleLyd) enheterEllerEnhet.truffetAvKuleLyd.avspill();
+            enheterEllerEnhet.taSkade(this.type.skade);
+            if(enheterEllerEnhet.død){
+                var våpen = this.eier;
+                if(våpen){
+                    var våpenEier = våpen.eier;
+                    if(våpenEier && våpenEier.nårMotstanderDrept) våpenEier.nårMotstanderDrept(enheterEllerEnhet);
+                }
+            }
+            return true;
+        }
+        return false;
     }
-
 };
 
 Prosjektil.prototype.tegn = function(){

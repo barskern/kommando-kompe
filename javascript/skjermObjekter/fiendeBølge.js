@@ -59,6 +59,8 @@ FiendeBølge.prototype.spawnFiende = function(){
     if(this.uSpawnedeFiender.length > 0){
         var fi = this.uSpawnedeFiender.shift();
         fi.globalX = (Spill.globalX + ctx.canvas.width / 2) + (ctx.canvas.width * (Math.random() > 0.5 ? 1 : -1));
+        fi.akselerasjonX *= Math.random() + 0.5;
+        fi.fartsgrenseX *= Math.random() + 0.5;
         fi.spawn();
         this.bølgeFiender.push(fi);
     }

@@ -53,7 +53,7 @@ Hovedmeny.prototype.init = function(){
 
     this.lyd = new Lyd(Lyd.typer.BAKGRUNN);
     this.lyd.loop = true;
-    this.lyd.avspill();
+    //this.lyd.avspill();
 };
 
 Hovedmeny.prototype.oppdater = function(){

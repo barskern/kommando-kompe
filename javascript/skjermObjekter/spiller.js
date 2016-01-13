@@ -49,17 +49,19 @@ function Spiller(atlas,bildeNavn,globalX,globalY,bredde,høyde){
     this.skalerLag(5,0.65,0.2,true);
 
     this.effekter = {
-        taSkade: new Effekt(Effekt.typer.BLOOD,0,0,600,0)
-
+        blodflekker: [
+            new Effekt(Effekt.typer.BLOOD,0,0,ctx.canvas.width,0),
+            new Effekt(Effekt.typer.BLOOD,0,0,ctx.canvas.width,0),
+            new Effekt(Effekt.typer.BLOOD,0,0,ctx.canvas.width,0)
+        ]
+    };
+    this.lyder = {
+        grynt: new Lyd(Lyd.typer.MANLIGGRYNT)
     };
 }
 
 Spiller.prototype = Object.create(Enhet.prototype);
 Spiller.prototype.constructor = Spiller;
-
-Spiller.prototype.nårMotstanderDrept = function(motstander){
-    this.poeng += motstander.poengForDrap;
-};
 
 Spiller.prototype.init = function(){
     //Høyre D
@@ -75,17 +77,23 @@ Spiller.prototype.init = function(){
     }.bind(this));
 
     //Hopp W
-    inngangsdata.leggTilTrykkeEvent('keydown',87,this.hopp.bind(this,this.akselerasjonY));
+    inngangsdata.leggTilTrykkeEvent('keydown',87,function(){
+        this.hopp(this.akselerasjonY);
+    }.bind(this));
 
     //Skyt Mellomrom
     inngangsdata.leggTilTrykkeEvent('keydown',32,this.skyt.bind(this));
+};
+
+Spiller.prototype.nårMotstanderDrept = function(motstander){
+    this.poeng += motstander.poengForDrap;
 };
 
 Spiller.prototype.gåAnimasjon = (function(){
     var fortegn = 1;
     return function(){
         var prosess = this.lag[2].rotasjon / this.animasjonsVerdier.maxBeinUtslag, fartAbs;
-        if((fartAbs = Math.abs(this.fartX)) < 1){
+        if((fartAbs = Math.abs(this.fartX)) < 1 || this.globalY + 10 > Terreng.nåværende.hentLineærY(this.globalX + (this.bredde/2))){
             this.roterLag(1,-10*this.lag[1].rotasjon*klokke.delta,true);
             this.roterLag(2,-10*this.lag[2].rotasjon*klokke.delta,true);
         } else {
@@ -115,7 +123,7 @@ Spiller.prototype.oppdater = function(){
 
     this.våpen.oppdater(this);
 
-    this.effekter.taSkade.oppdater();
+    for(var i = 0; i < this.effekter.blodflekker.length; i++) this.effekter.blodflekker[i].oppdater();
 };
 
 Spiller.prototype.tegn = function(){
@@ -127,7 +135,7 @@ Spiller.prototype.tegn = function(){
     this.tegnLag(this.lag[this.lag.length-1]);
     ctx.restore();
     this.helsebar.tegn();
-    this.effekter.taSkade.tegn();
+    for(var i = 0; i < this.effekter.blodflekker.length; i++) this.effekter.blodflekker[i].tegn();
 };
 
 Spiller.prototype.skyt = function(){
@@ -136,5 +144,16 @@ Spiller.prototype.skyt = function(){
 
 Spiller.prototype.taSkade = function(mengde){
     Enhet.prototype.taSkade.call(this,mengde);
-    this.effekter.taSkade.skalTegnes = true;
+    this.lyder.grynt.avspill();
+    for(var i = 0; i < this.effekter.blodflekker.length; i++){
+        var nåværende = this.effekter.blodflekker[i];
+        if(!nåværende.skalTegnes){
+            nåværende.x = ctx.canvas.width * (Math.random()-0.5);
+            nåværende.y = ctx.canvas.height * (Math.random()-0.5);
+            nåværende.rotasjon = Math.random() * 360;
+            nåværende.varighet = nåværende.type.varighet*(Math.random()+0.8);
+            nåværende.skalTegnes = true;
+            break;
+        }
+    }
 };

@@ -161,6 +161,7 @@ BildeAtlasObjekt.prototype.settBreddeHøyde = function(bildeNavn, atlas, objekt)
 BildeAtlasObjekt.prototype.settBreddeHøydeMedMinimum = function(bildeNavn, minimumsBredde, minimumsHøyde, atlas, objekt){
     objekt = (!objekt ? this : objekt);
     atlas = (!atlas ? this.atlas : atlas);
+    bildeNavn = (!bildeNavn ? this.bildeNavn : bildeNavn);
     if(bildeNavn){
         var bilde = atlas.data[bildeNavn];
         if(minimumsBredde/minimumsHøyde <= bilde.bredde/bilde.høyde){

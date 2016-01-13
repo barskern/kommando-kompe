@@ -12,6 +12,7 @@ function Effekt(type,x,y,bredde,høyde){
     BildeAtlasObjekt.call(this,type.atlas,type.bildeNavn,x,y,bredde,høyde);
     this.type = type;
     this.skalTegnes = false;
+    this.varighet = type.varighet;
 }
 
 Effekt.prototype = Object.create(BildeAtlasObjekt.prototype);
@@ -21,7 +22,7 @@ Effekt.prototype.oppdater = (function(){
     var tidSidenStart = 0;
     return function(){
         if(this.skalTegnes){
-            if((tidSidenStart += klokke.delta) > this.type.varighet) {
+            if((tidSidenStart += klokke.delta) > this.varighet) {
                 this.skalTegnes = false;
                 tidSidenStart = 0;
             }

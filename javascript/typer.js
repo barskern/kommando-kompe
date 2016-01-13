@@ -42,7 +42,9 @@ Lyd.typer = (function() {
         BAKGRUNN: new Egenskaper("menyBakgrunn.mp3"),
         SUBMACHINEGUN: new Egenskaper("submachinegun.mp3"),
         PISTOL: new Egenskaper("pistol.mp3"),
-        KULETREFFERMETALL: new Egenskaper("kuleTrefferMetall.mp3")
+        MANLIGGRYNT: new Egenskaper("manligGrynt.mp3"),
+        //INTENSMUSIKK: new Egenskaper("intensMusikk.mp3"),
+        SKUDDMEDLADING: new Egenskaper("sniper.mp3")
     };
 })();
 
@@ -55,10 +57,6 @@ Terreng.typer = (function(){
         this.nøkkelpunktKart = undefined;
     }
     return {
-        SKOGLAND: new Egenskaper(Atlas.typer.LANDSKAP,"skogland",1,function(){
-                return [[-Number.MAX_VALUE, 0.85 * ctx.canvas.height, 1], [Number.MAX_VALUE, 0.85 * ctx.canvas.height, 1]];
-            }
-        ),
         URBAN: new Egenskaper(Atlas.typer.LANDSKAP,"urban4Komponent",1,function(){
                 return [[-Number.MAX_VALUE, 0.85 * ctx.canvas.height, 1], [Number.MAX_VALUE, 0.85 * ctx.canvas.height, 1]];
         })
@@ -89,7 +87,8 @@ Prosjektil.typer = (function(){
     return {
         VANLIG: new Egenskaper(config.pikselPerMeter,config.pikselPerMeter*0.02,12,20,"red"),
         STORKULE: new Egenskaper(config.pikselPerMeter*0.2,config.pikselPerMeter*0.2,10,10,"yellow"),
-        PLASMA: new Egenskaper(config.pikselPerMeter*0.6,config.pikselPerMeter*0.02,11,26,"purple")
+        PLASMA: new Egenskaper(config.pikselPerMeter*0.6,config.pikselPerMeter*0.02,11,26,"purple"),
+        KOMPEKANNON: new Egenskaper(config.pikselPerMeter*0.4,config.pikselPerMeter*0.1,11,50,"yellow")
     };
 })();
 
@@ -110,6 +109,8 @@ Våpen.typer = (function(){
         M4A1PULSERIFLE: new Egenskaper(Atlas.typer.TING,"M4A1_PulseRifle",Lyd.typer.PISTOL,[0.3,0.5],[0.94,0.25],300,
             Prosjektil.typer.PLASMA,Effekt.typer.GEVÆRLØPBLINK,[config.pikselPerMeter * 0.4,config.pikselPerMeter * 0.15]),
         M97RIFLE: new Egenskaper(Atlas.typer.TING,"M97Rifle",Lyd.typer.PISTOL,[0.33,0.5],[0.9,0.21],500,
-            Prosjektil.typer.VANLIG,Effekt.typer.GEVÆRLØPBLINK,[config.pikselPerMeter * 0.4,config.pikselPerMeter * 0.15])
+            Prosjektil.typer.VANLIG,Effekt.typer.GEVÆRLØPBLINK,[config.pikselPerMeter * 0.4,config.pikselPerMeter * 0.15]),
+        DAGNYSKOMPEBLASTER: new Egenskaper(Atlas.typer.TING,"fiendeDagnysKompeblaster",Lyd.typer.SKUDDMEDLADING,[0,0.5],[0.95,0.5],80,
+            Prosjektil.typer.KOMPEKANNON,Effekt.typer.GEVÆRLØPBLINK,[config.pikselPerMeter * 0.8,config.pikselPerMeter * 0.3])
     };
 })();
