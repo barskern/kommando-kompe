@@ -1,1 +1,3 @@
-# Morgendugg.github.io
+# Kommando kompe
+
+My first extensive game made during high-school.
